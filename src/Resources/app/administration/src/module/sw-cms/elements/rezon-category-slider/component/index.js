@@ -2,6 +2,7 @@ import template from './sw-cms-el-rezon-category-slider.html.twig';
 import './sw-cms-el-rezon-category-slider.scss';
 
 const { Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 
 /**
  * @private
@@ -10,7 +11,10 @@ const { Mixin } = Shopware;
 export default {
     template,
 
-    inject: ['feature'],
+    inject: [
+        'feature',
+        'repositoryFactory',
+    ],
 
     mixins: [
         Mixin.getByName('cms-element'),
@@ -19,6 +23,7 @@ export default {
     data() {
         return {
             sliderBoxLimit: 1,
+            categoryCollection: null,
         };
     },
 
@@ -80,6 +85,20 @@ export default {
 
             return `align-self: ${this.element.config.verticalAlign.value};`;
         },
+
+        categories() {
+            // Если есть данные из resolver (storefront)
+            if (this.element.data && this.element.data.length > 0) {
+                return this.element.data;
+            }
+
+            // Если есть загруженная коллекция (admin)
+            if (this.categoryCollection && this.categoryCollection.length > 0) {
+                return this.categoryCollection;
+            }
+
+            return null;
+        },
     },
 
     watch: {
@@ -87,6 +106,13 @@ export default {
             handler() {
                 this.setSliderRowLimit();
             },
+        },
+
+        'element.config.categories.value': {
+            handler() {
+                this.loadCategories();
+            },
+            immediate: true,
         },
 
         currentDeviceView() {
@@ -108,10 +134,34 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initElementData('rezon-category-slider');
+            this.loadCategories();
         },
 
         mountedComponent() {
             this.setSliderRowLimit();
+        },
+
+        loadCategories() {
+            const categoryIds = this.element.config.categories.value;
+
+            if (!categoryIds || categoryIds.length === 0) {
+                this.categoryCollection = null;
+                return;
+            }
+
+            const categoryRepository = this.repositoryFactory.create('category');
+            const criteria = new Criteria();
+            criteria.setIds(categoryIds);
+            criteria.addAssociation('media');
+
+            categoryRepository
+                .search(criteria, Shopware.Context.api)
+                .then((result) => {
+                    this.categoryCollection = result;
+                })
+                .catch(() => {
+                    this.categoryCollection = null;
+                });
         },
 
         setSliderRowLimit() {

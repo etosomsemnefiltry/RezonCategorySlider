@@ -35,7 +35,7 @@
             class="sw-cms-el-rezon-category-slider__category-holder"
             :style="sliderBoxMinWidth"
         >
-            <template v-if="!element.data || !element.data">
+            <template v-if="!categories || !categories.length">
                 {% block sw_cms_element_rezon_category_slider_demo_data %}
                 <div
                     v-for="index in sliderBoxLimit"
@@ -53,8 +53,8 @@
             <template v-else>
                 {% block sw_cms_element_rezon_category_slider_categories %}
                 <template
-                    v-for="(category, index) in element.data"
-                    :key="index"
+                    v-for="(category, index) in categories"
+                    :key="category.id || index"
                 >
                     <div
                         v-if="index < sliderBoxLimit"
@@ -62,7 +62,7 @@
                     >
                         <div class="sw-cms-el-rezon-category-slider__category-content">
                             <sw-icon name="regular-folder" size="48"></sw-icon>
-                            <p>{{ category.translated.name || category.name }}</p>
+                            <p>{{ category.translated?.name || category.name }}</p>
                         </div>
                     </div>
                 </template>

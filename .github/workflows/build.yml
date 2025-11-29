@@ -13,7 +13,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -23,7 +23,7 @@ jobs:
         coverage: none
         
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         
@@ -61,7 +61,7 @@ jobs:
         echo "Created archive: ${ARCHIVE_NAME}"
         
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: plugin-archive
         path: ${{ steps.create-archive.outputs.archive_name }}
@@ -80,7 +80,7 @@ jobs:
         echo "Архив плагина доступен в разделе Artifacts этого workflow." >> build-info.md
         
     - name: Upload build info
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-info
         path: build-info.md

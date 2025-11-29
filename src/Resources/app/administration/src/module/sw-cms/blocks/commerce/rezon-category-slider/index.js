@@ -3,7 +3,7 @@ import './preview';
 
 Shopware.Service('cmsService').registerCmsBlock({
     name: 'rezon-category-slider',
-    label: 'rezon-category-slider.block.label',
+    label: 'Rezon Category Slider',
     category: 'commerce',
     component: 'sw-cms-block-rezon-category-slider',
     previewComponent: 'sw-cms-preview-rezon-category-slider',
@@ -18,4 +18,3 @@ Shopware.Service('cmsService').registerCmsBlock({
         categorySlider: 'rezon-category-slider'
     }
 });
-

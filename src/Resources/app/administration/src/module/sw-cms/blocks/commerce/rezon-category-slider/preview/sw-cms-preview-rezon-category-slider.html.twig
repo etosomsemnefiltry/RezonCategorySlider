@@ -1,26 +1,28 @@
 {% block sw_cms_block_rezon_category_slider_preview %}
 <div class="sw-cms-preview-rezon-category-slider">
-    <mt-icon
+    
+   <mt-icon
         name="regular-chevron-left"
-        size="20"
+        size="15"
     />
-    <div class="sw-cms-preview-rezon-category-slider__category-box">
-        <div class="sw-cms-preview-rezon-category-slider__category-item">
-            <sw-cms-product-box-preview />
-            <p class="sw-cms-preview-rezon-category-slider__category-label">Category</p>
-        </div>
-        <div class="sw-cms-preview-rezon-category-slider__category-item">
-            <sw-cms-product-box-preview />
-            <p class="sw-cms-preview-rezon-category-slider__category-label">Category</p>
-        </div>
-        <div class="sw-cms-preview-rezon-category-slider__category-item">
-            <sw-cms-product-box-preview />
-            <p class="sw-cms-preview-rezon-category-slider__category-label">Category</p>
-        </div>
-    </div>
-    <mt-icon
+    
+<div class="sw-cms-preview-image-three-column">
+    <img
+        :src="assetFilter('/administration/administration/static/img/cms/preview_camera_small.jpg')"
+        alt=""
+    >
+    <img
+        :src="assetFilter('/administration/administration/static/img/cms/preview_plant_small.jpg')"
+        alt=""
+    >
+    <img
+        :src="assetFilter('/administration/administration/static/img/cms/preview_glasses_small.jpg')"
+        alt=""
+    >
+</div>
+<mt-icon
         name="regular-chevron-right"
-        size="20"
+        size="15"
     />
 </div>
 {% endblock %}

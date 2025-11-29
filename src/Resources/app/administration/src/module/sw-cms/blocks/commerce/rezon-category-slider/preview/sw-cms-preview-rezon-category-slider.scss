@@ -1,33 +1,14 @@
 .sw-cms-preview-rezon-category-slider {
-    align-items: center;
     display: grid;
-    grid-template-columns: 20px 1fr 20px;
-    grid-gap: 5px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
     padding: 15px;
+    height: 120px;
 
     img {
-        margin: 0;
         display: block;
-        max-width: 100%;
-    }
-
-    .sw-cms-preview-rezon-category-slider__category-box {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 0 15px;
-    }
-
-    .sw-cms-preview-rezon-category-slider__category-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .sw-cms-preview-rezon-category-slider__category-label {
-        margin: 0;
-        font-size: 12px;
-        text-align: center;
-        color: #52667a;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
     }
 }

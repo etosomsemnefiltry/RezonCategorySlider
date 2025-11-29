@@ -27,7 +27,17 @@ Shopware.Service('cmsService').registerCmsBlock({
         sizingMode: 'full_width'
     },
     slots: {
-        categorySlider: 'rezon-category-slider'
+        categorySlider: {
+            type: 'rezon-category-slider',
+            default: {
+                config: {
+                    displayMode: { source: 'static', value: 'standard' },
+                    boxLayout: { source: 'static', value: 'standard' },
+                    navigationArrows: { source: 'static', value: 'outside' },
+                    elMinWidth: { source: 'static', value: '300px' },
+                },
+            },
+        },
     }
 });
 

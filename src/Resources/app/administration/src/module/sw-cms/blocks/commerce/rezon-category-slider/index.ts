@@ -1,6 +1,18 @@
-import './component';
-import './preview';
+/**
+ * @private
+ * @sw-package discovery
+ */
+Shopware.Component.register('sw-cms-preview-rezon-category-slider', () => import('./preview'));
+/**
+ * @private
+ * @sw-package discovery
+ */
+Shopware.Component.register('sw-cms-block-rezon-category-slider', () => import('./component'));
 
+/**
+ * @private
+ * @sw-package discovery
+ */
 Shopware.Service('cmsService').registerCmsBlock({
     name: 'rezon-category-slider',
     label: 'rezon-category-slider.block.label',

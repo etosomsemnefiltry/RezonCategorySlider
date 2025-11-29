@@ -27,20 +27,58 @@ jobs:
       with:
         node-version: '18'
         
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        sudo mv composer.phar /usr/local/bin/composer
+        
     - name: Allow Composer plugins
       run: |
         composer config --no-plugins allow-plugins.symfony/runtime true || true
         composer config --no-plugins allow-plugins.composer/package-versions-deprecated true || true
         
-    - name: Install Composer dependencies
-      run: composer install --no-dev --optimize-autoloader --no-interaction
-      
     - name: Get plugin version
       id: plugin-version
       run: |
         VERSION=$(grep -oP '"version":\s*"\K[^"]+' composer.json)
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Plugin version: $VERSION"
+        
+    - name: Install Shopware for compilation
+      run: |
+        # Создаем временную директорию для Shopware
+        mkdir -p shopware-temp
+        cd shopware-temp
+        
+        # Устанавливаем Shopware 6.7.0 через composer
+        echo "Установка Shopware 6.7.0..."
+        composer create-project shopware/production . --no-interaction --prefer-dist --no-dev --ignore-platform-reqs
+        
+        # Создаем правильную структуру плагина
+        mkdir -p custom/plugins/RezonCategorySlider
+        
+        # Копируем все файлы плагина
+        cp -r ../src custom/plugins/RezonCategorySlider/src
+        cp ../composer.json custom/plugins/RezonCategorySlider/
+        cp ../LICENSE custom/plugins/RezonCategorySlider/ 2>/dev/null || true
+        
+    - name: Compile administration
+      run: |
+        cd shopware-temp
+        
+        # Устанавливаем зависимости плагина
+        echo "Установка зависимостей плагина..."
+        cd custom/plugins/RezonCategorySlider
+        composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+        cd ../../..
+        
+        # Регистрируем плагин
+        echo "Регистрация плагина..."
+        php bin/console plugin:refresh --no-interaction || true
+        
+        # Компилируем административную часть
+        echo "Компиляция административной части..."
+        php bin/console bundle:dump || true
         
     - name: Create plugin archive
       id: create-archive
@@ -52,10 +90,20 @@ jobs:
         # Создаем временную директорию для архива
         mkdir -p build
         
-        # Копируем необходимые файлы
-        cp -r src build/
-        cp composer.json build/
-        cp LICENSE build/ 2>/dev/null || true
+        # Копируем скомпилированный плагин из Shopware
+        if [ -d "shopware-temp/custom/plugins/RezonCategorySlider" ]; then
+          echo "Копирование скомпилированного плагина..."
+          cp -r shopware-temp/custom/plugins/RezonCategorySlider/src build/src
+          cp shopware-temp/custom/plugins/RezonCategorySlider/composer.json build/
+          if [ -f "shopware-temp/custom/plugins/RezonCategorySlider/LICENSE" ]; then
+            cp shopware-temp/custom/plugins/RezonCategorySlider/LICENSE build/
+          fi
+        else
+          echo "Копирование исходников плагина (fallback)..."
+          cp -r src build/src
+          cp composer.json build/
+          cp LICENSE build/ 2>/dev/null || true
+        fi
         
         # Создаем архив
         cd build

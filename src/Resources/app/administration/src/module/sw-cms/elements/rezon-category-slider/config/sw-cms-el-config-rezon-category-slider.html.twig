@@ -47,7 +47,8 @@
                 <sw-entity-multi-select
                     v-model="element.config.categories.value"
                     entity="category"
-                    label="Выберите категории для слайдера"
+                    :label="$tc('rezon-category-slider.element.config.label.selection')"
+                    :placeholder="$tc('rezon-category-slider.element.config.placeholder.selection')"
                     :criteria="categoryCriteria"
                 />
                 {% endblock %}

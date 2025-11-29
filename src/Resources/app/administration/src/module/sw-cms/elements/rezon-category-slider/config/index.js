@@ -22,7 +22,7 @@ export default {
 
     computed: {
         categoryCriteria() {
-            const criteria = new Criteria();
+            const criteria = new Criteria(1, 25);
             criteria.addAssociation('media');
             return criteria;
         },

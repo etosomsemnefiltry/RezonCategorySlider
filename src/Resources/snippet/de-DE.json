@@ -4,7 +4,17 @@
       "label": "Kategorie-Slider"
     },
     "element": {
-      "label": "Kategorie-Slider"
+      "label": "Kategorie-Slider",
+      "config": {
+        "label": {
+          "title": "Titel",
+          "selection": "Kategorien auswählen"
+        },
+        "placeholder": {
+          "title": "Titel eingeben",
+          "selection": "Kategorien für den Slider auswählen"
+        }
+      }
     }
   }
 }

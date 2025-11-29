@@ -65,9 +65,28 @@
 
         .sw-cms-el-rezon-category-slider__category-holder {
             width: 100%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
-            gap: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            min-height: 200px;
+        }
+
+        .sw-cms-el-rezon-category-slider__category-item,
+        .sw-cms-el-rezon-category-slider__demo-item {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sw-cms-el-rezon-category-slider__demo-content,
+        .sw-cms-el-rezon-category-slider__category-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
     }
 }

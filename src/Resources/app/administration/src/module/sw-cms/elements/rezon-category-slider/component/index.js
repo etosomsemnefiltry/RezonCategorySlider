@@ -22,7 +22,7 @@ export default {
 
     data() {
         return {
-            sliderBoxLimit: 1,
+            sliderBoxLimit: 3,
             categoryCollection: null,
         };
     },
@@ -109,10 +109,16 @@ export default {
         },
 
         'element.config.categories.value': {
-            handler() {
-                this.loadCategories();
+            handler(newValue) {
+                // Загружаем категории при изменении
+                if (newValue && Array.isArray(newValue)) {
+                    this.loadCategories();
+                } else {
+                    this.categoryCollection = null;
+                }
             },
             immediate: true,
+            deep: true,
         },
 
         currentDeviceView() {
@@ -134,7 +140,6 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initElementData('rezon-category-slider');
-            this.loadCategories();
         },
 
         mountedComponent() {
@@ -144,18 +149,21 @@ export default {
         loadCategories() {
             const categoryIds = this.element.config.categories.value;
 
-            if (!categoryIds || categoryIds.length === 0) {
+            if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) {
                 this.categoryCollection = null;
                 return;
             }
 
             const categoryRepository = this.repositoryFactory.create('category');
-            const criteria = new Criteria();
+            const criteria = new Criteria(1, 100);
             criteria.setIds(categoryIds);
             criteria.addAssociation('media');
 
             categoryRepository
-                .search(criteria, Shopware.Context.api)
+                .search(criteria, {
+                    ...Shopware.Context.api,
+                    inheritance: true,
+                })
                 .then((result) => {
                     this.categoryCollection = result;
                 })
@@ -165,40 +173,8 @@ export default {
         },
 
         setSliderRowLimit() {
-            const boxWidth = this.$refs.categoryHolder?.offsetWidth;
-
-            if (boxWidth === undefined) {
-                return;
-            }
-
-            if (this.currentDeviceView === 'mobile' || boxWidth < 500) {
-                this.sliderBoxLimit = 1;
-                return;
-            }
-
-            if (
-                !this.element.config.elMinWidth.value ||
-                this.element.config.elMinWidth.value === 'px' ||
-                this.element.config.elMinWidth.value.indexOf('px') === -1
-            ) {
-                this.sliderBoxLimit = 1;
-                return;
-            }
-
-            if (parseInt(this.element.config.elMinWidth.value.replace('px', ''), 10) <= 0) {
-                return;
-            }
-
-            // Subtract to fake look in storefront which has more width
-            const fakeLookWidth = 100;
-            const elGap = 32;
-            let elWidth = parseInt(this.element.config.elMinWidth.value.replace('px', ''), 10);
-
-            if (elWidth >= 300) {
-                elWidth -= fakeLookWidth;
-            }
-
-            this.sliderBoxLimit = 1;
+            // Всегда показываем 3 элемента
+            this.sliderBoxLimit = 3;
         },
 
         getCategoryEl(category) {

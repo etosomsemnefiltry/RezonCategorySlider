@@ -4,7 +4,17 @@
       "label": "Category Slider"
     },
     "element": {
-      "label": "Category Slider"
+      "label": "Category Slider",
+      "config": {
+        "label": {
+          "title": "Title",
+          "selection": "Select categories"
+        },
+        "placeholder": {
+          "title": "Enter title",
+          "selection": "Select categories for the slider"
+        }
+      }
     }
   }
 }

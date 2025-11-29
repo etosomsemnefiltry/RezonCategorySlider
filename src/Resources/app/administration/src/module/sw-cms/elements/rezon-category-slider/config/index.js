@@ -2,7 +2,7 @@ import template from './sw-cms-el-config-rezon-category-slider.html.twig';
 import './sw-cms-el-config-rezon-category-slider.scss';
 
 const { Mixin } = Shopware;
-const { Criteria, EntityCollection } = Shopware.Data;
+const { Criteria } = Shopware.Data;
 
 /**
  * @private
@@ -20,37 +20,11 @@ export default {
         Mixin.getByName('cms-element'),
     ],
 
-    data() {
-        return {
-            categoryCollection: null,
-        };
-    },
-
     computed: {
-        categoryRepository() {
-            return this.repositoryFactory.create('category');
-        },
-
-        categories() {
-            if (this.element?.data?.categories && this.element.data.categories.length > 0) {
-                return this.element.data.categories;
-            }
-
-            return null;
-        },
-
-        categoryMediaFilter() {
-            const criteria = new Criteria(1, 25);
+        categoryCriteria() {
+            const criteria = new Criteria();
             criteria.addAssociation('media');
-
             return criteria;
-        },
-
-        categoryMultiSelectContext() {
-            const context = { ...Shopware.Context.api };
-            context.inheritance = true;
-
-            return context;
         },
 
         displayModeOptions() {
@@ -141,40 +115,6 @@ export default {
     methods: {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
-
-            this.categoryCollection = new EntityCollection('/category', 'category', Shopware.Context.api);
-
-            if (this.element.config.categories.value.length <= 0) {
-                return;
-            }
-
-            const criteria = new Criteria(1, 100);
-            criteria.addAssociation('media');
-            criteria.setIds(this.element.config.categories.value);
-
-            this.categoryRepository
-                .search(criteria, {
-                    ...Shopware.Context.api,
-                    inheritance: true,
-                })
-                .then((result) => {
-                    this.categoryCollection = result;
-                });
-        },
-
-        onCategoriesChange() {
-            this.element.config.categories.value = this.categoryCollection.getIds();
-            this.element.translated.config.categories.value = this.categoryCollection.getIds();
-
-            if (!this.element?.data) {
-                return;
-            }
-
-            this.element.data.categories = this.categoryCollection;
-        },
-
-        isSelected(itemId) {
-            return this.categoryCollection.has(itemId);
         },
     },
 };

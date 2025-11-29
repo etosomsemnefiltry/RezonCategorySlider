@@ -27,12 +27,8 @@ Shopware.Service('cmsService').registerCmsElement({
     defaultConfig: {
         categories: {
             source: 'static',
+            required: false,
             value: [],
-            required: true,
-            entity: {
-                name: 'category',
-                criteria: new Shopware.Data.Criteria(1, 25).addAssociation('media'),
-            },
         },
         title: {
             source: 'static',

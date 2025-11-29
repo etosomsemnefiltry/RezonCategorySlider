@@ -27,6 +27,11 @@ jobs:
       with:
         node-version: '18'
         
+    - name: Allow Composer plugins
+      run: |
+        composer config --no-plugins allow-plugins.symfony/runtime true || true
+        composer config --no-plugins allow-plugins.composer/package-versions-deprecated true || true
+        
     - name: Install Composer dependencies
       run: composer install --no-dev --optimize-autoloader --no-interaction
       

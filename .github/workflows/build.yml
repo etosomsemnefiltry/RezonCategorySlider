@@ -1,0 +1,88 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
+        coverage: none
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader --no-interaction
+      
+    - name: Get plugin version
+      id: plugin-version
+      run: |
+        VERSION=$(grep -oP '"version":\s*"\K[^"]+' composer.json)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Plugin version: $VERSION"
+        
+    - name: Create plugin archive
+      id: create-archive
+      run: |
+        PLUGIN_NAME="RezonCategorySlider"
+        VERSION="${{ steps.plugin-version.outputs.version }}"
+        ARCHIVE_NAME="${PLUGIN_NAME}-v${VERSION}-${GITHUB_SHA:0:7}.zip"
+        
+        # Создаем временную директорию для архива
+        mkdir -p build
+        
+        # Копируем необходимые файлы
+        cp -r src build/
+        cp composer.json build/
+        cp LICENSE build/ 2>/dev/null || true
+        
+        # Создаем архив
+        cd build
+        zip -r "../${ARCHIVE_NAME}" .
+        cd ..
+        
+        echo "archive_name=${ARCHIVE_NAME}" >> $GITHUB_OUTPUT
+        echo "Created archive: ${ARCHIVE_NAME}"
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: plugin-archive
+        path: ${{ steps.create-archive.outputs.archive_name }}
+        retention-days: 30
+        
+    - name: Create release info
+      run: |
+        echo "## Plugin Build Information" >> build-info.md
+        echo "" >> build-info.md
+        echo "- **Version:** ${{ steps.plugin-version.outputs.version }}" >> build-info.md
+        echo "- **Commit:** ${{ github.sha }}" >> build-info.md
+        echo "- **Branch:** ${{ github.ref_name }}" >> build-info.md
+        echo "- **Build Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> build-info.md
+        echo "" >> build-info.md
+        echo "### Download" >> build-info.md
+        echo "Архив плагина доступен в разделе Artifacts этого workflow." >> build-info.md
+        
+    - name: Upload build info
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-info
+        path: build-info.md
+        retention-days: 30
+

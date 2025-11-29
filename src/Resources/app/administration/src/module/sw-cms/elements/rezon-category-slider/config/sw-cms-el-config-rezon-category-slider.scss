@@ -1,0 +1,35 @@
+@import "~scss/variables";
+
+.sw-cms-el-config-rezon-category-slider {
+    .sw-cms-el-config-rezon-category-slider__tabs {
+        .sw-cms-el-config-rezon-category-slider__tab-content {
+            .sw-cms-el-config-rezon-category-slider__tab-content-categories {
+                margin-bottom: 22px;
+            }
+        }
+
+        .sw-cms-el-config-rezon-category-slider__tab-settings {
+            display: grid;
+            gap: 0 30px;
+        }
+    }
+
+    &__tab-settings-rotate-switch,
+    &__tab-settings-rotate-autoplay {
+        margin-bottom: 0;
+    }
+
+    .sw-select-result .sw-select-result__result-item-text {
+        display: block;
+
+        .sw-highlight-text {
+            display: inline;
+        }
+    }
+
+    .has--two-elements {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}

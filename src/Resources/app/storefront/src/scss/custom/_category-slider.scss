@@ -1,0 +1,19 @@
+// Стили для category slider (как в оригинальном product-slider)
+// Количество элементов на слайд определяется автоматически через productboxMinWidth
+.category-slider {
+    position: relative;
+    width: 100%;
+}
+
+.category-slider-container {
+    display: flex;
+}
+
+.category-slider-item {
+    box-sizing: border-box;
+}
+
+.category-slider .card {
+    width: 100%;
+    max-width: 100%;
+}

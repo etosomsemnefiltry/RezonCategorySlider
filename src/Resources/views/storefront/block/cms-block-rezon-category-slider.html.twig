@@ -1,0 +1,8 @@
+{% block block_rezon_category_slider %}
+    {% set element = block.slots.getSlot('categorySlider') %}
+    {% if element %}
+        {% sw_include '@RezonCategorySlider/storefront/element/cms-element-' ~ element.type ~ '.html.twig' with { element: element } %}
+    {% endif %}
+{% endblock %}
+
+

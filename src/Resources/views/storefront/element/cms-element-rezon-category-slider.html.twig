@@ -1,0 +1,123 @@
+{% block element_rezon_category_slider %}
+    {% set sliderConfig = element.fieldConfig.elements %}
+    {% set visibleValues = ['inside', 'outside'] %}
+    {% set blockId = block.id %}
+
+    {% if element.data and element.data|length > 0 %}
+        <div class="cms-element-{{ element.type }}{% if sliderConfig.displayMode.value == "standard" and sliderConfig.verticalAlign.value %} has-vertical-alignment{% endif %}">
+            {% set categorySliderOptionsSlider = {
+                controls: sliderConfig.navigationArrows.value in visibleValues,
+                nav: false,
+                mouseDrag: true,
+                autoplay: sliderConfig.rotate.value,
+                autoplayButtonOutput: false,
+                autoplayTimeout: sliderConfig.autoplayTimeout.value,
+                speed: sliderConfig.speed.value,
+                ariaLive: sliderConfig.rotate.value ? false : true,
+                gutter: 30
+            } %}
+
+            {% set categorySliderOptionsSlider = categorySliderOptionsSlider|merge({
+                loop: false,
+                rewind: true,
+            }) %}
+
+            {% set categorySliderOptions = {
+                productboxMinWidth: sliderConfig.elMinWidth.value ? sliderConfig.elMinWidth.value : '',
+                slider: categorySliderOptionsSlider
+            } %}
+
+            {% block element_category_slider_alignment %}
+                {% if config.verticalAlign.value %}
+                    <div class="cms-element-alignment{% if sliderConfig.verticalAlign.value == "center" %} align-self-center{% elseif sliderConfig.verticalAlign.value == "flex-end" %} align-self-end{% else %} align-self-start{% endif %}">
+                {% endif %}
+                    <div
+                        class="base-slider category-slider{% if sliderConfig.border.value %} has-border{% endif %}{% if sliderConfig.navigationArrows.value == "outside" %} has-nav-outside{% endif %}{% if sliderConfig.navigation.value %} has-nav{% endif %}"
+                        data-product-slider="true"
+                        data-product-slider-options="{{ categorySliderOptions|json_encode }}"
+                        role="region"
+                        aria-label="{{ 'component.cms.categoryGallery.ariaLabel'|trans({ '%total%': element.data|length })|sw_sanitize }}"
+                        tabindex="0"
+                    >
+
+                        {% block element_category_slider_skip_slider %}
+                            {% sw_include '@Storefront/storefront/component/skip-target.html.twig' with {
+                                targetId: blockId,
+                                snippet: 'component.cms.categoryGallery.skipCategoryGallery',
+                            } %}
+                        {% endblock %}
+
+                        {% block element_category_slider_title %}
+                            {% if sliderConfig.title.value %}
+                                <div class="cms-element-title">
+                                    <p class="cms-element-title-paragraph">{{ sliderConfig.title.value }}</p>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block element_category_slider_inner %}
+                            {% block element_category_slider_element %}
+                                <div class="category-slider-container"
+                                     data-product-slider-container="true">
+                                    {% for category in element.data %}
+                                        {% block element_category_slider_inner_item %}
+                                            <div class="category-slider-item">
+                                                {% sw_include '@RezonCategorySlider/storefront/component/category/card/box-hero.html.twig' with {
+                                                    'category': category,
+                                                    'layout': sliderConfig.boxLayout.value,
+                                                    'displayMode': sliderConfig.displayMode.value
+                                                } %}
+                                            </div>
+                                        {% endblock %}
+                                    {% endfor %}
+                                </div>
+                            {% endblock %}
+
+                            {% block element_category_slider_controls %}
+                                {% if categorySliderOptions.slider.controls %}
+                                    <div class="category-slider-controls-container">
+                                        <div
+                                            class="base-slider-controls"
+                                            data-product-slider-controls="true"
+                                            role="navigation"
+                                        >
+                                            {% block element_category_slider_controls_items %}
+                                                {% set positionClassesPrev = '' %}
+                                                {% if sliderConfig.navigationArrows.value is not null %}
+                                                    {% set positionClassesPrev = ' is-nav-prev-' ~ sliderConfig.navigationArrows.value %}
+                                                    {% set positionClassesNext = ' is-nav-next-' ~ sliderConfig.navigationArrows.value %}
+                                                {% endif %}
+
+                                                <button
+                                                    class="base-slider-controls-prev category-slider-controls-prev{{ positionClassesPrev }}{% if sliderConfig.border.value %} has-border{% endif %}"
+                                                    aria-label="{{ 'general.previous'|trans|striptags }}">
+                                                    {% block element_category_slider_controls_items_prev_icon %}
+                                                        {% sw_icon 'arrow-head-left' %}
+                                                    {% endblock %}
+                                                </button>
+                                                <button
+                                                    class="base-slider-controls-next category-slider-controls-next{{ positionClassesNext }}{% if sliderConfig.border.value %} has-border{% endif %}"
+                                                    aria-label="{{ 'general.next'|trans|striptags }}">
+                                                    {% block element_category_slider_controls_items_next_icon %}
+                                                        {% sw_icon 'arrow-head-right' %}
+                                                    {% endblock %}
+                                                </button>
+                                            {% endblock %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        {% endblock %}
+                    </div>
+                {% if config.verticalAlign.value %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endif %}
+
+    {% block element_category_slider_target_after_slider %}
+        <div id="content-after-target-{{ blockId }}"></div>
+    {% endblock %}
+{% endblock %}
+

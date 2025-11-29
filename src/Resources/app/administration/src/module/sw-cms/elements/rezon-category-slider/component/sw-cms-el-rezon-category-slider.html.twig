@@ -1,0 +1,90 @@
+{% block sw_cms_element_rezon_category_slider %}
+<div
+    class="sw-cms-el-rezon-category-slider"
+    :class="classes"
+    :style="verticalAlignStyle"
+>
+    {% block sw_cms_element_rezon_category_slider_title %}
+    <div
+        v-if="element.config.title.value"
+        class="sw-cms-el-rezon-category-slider__title"
+    >
+        {{ element.config.title.value }}
+    </div>
+    {% endblock %}
+
+    {% block sw_cms_element_rezon_category_slider_content %}
+    <div class="sw-cms-el-rezon-category-slider__content">
+        {% block sw_cms_element_rezon_category_slider_arrow_left %}
+        <div
+            v-if="hasNavigationArrows"
+            class="sw-cms-el-rezon-category-slider__navigation is--left-arrow"
+            :class="navArrowsClasses"
+        >
+            <mt-icon
+                class="sw-cms-el-rezon-category-slider__navigation-button"
+                name="regular-chevron-left"
+                size="24"
+            />
+        </div>
+        {% endblock %}
+
+        {% block sw_cms_element_rezon_category_slider_category_holder %}
+        <div
+            ref="categoryHolder"
+            class="sw-cms-el-rezon-category-slider__category-holder"
+            :style="sliderBoxMinWidth"
+        >
+            <template v-if="!element.data || !element.data">
+                {% block sw_cms_element_rezon_category_slider_demo_data %}
+                <div
+                    v-for="index in sliderBoxLimit"
+                    :key="index"
+                    class="sw-cms-el-rezon-category-slider__demo-item"
+                >
+                    <div class="sw-cms-el-rezon-category-slider__demo-content">
+                        <sw-icon name="regular-folder" size="48"></sw-icon>
+                        <p>Kategorie</p>
+                    </div>
+                </div>
+                {% endblock %}
+            </template>
+
+            <template v-else>
+                {% block sw_cms_element_rezon_category_slider_categories %}
+                <template
+                    v-for="(category, index) in element.data"
+                    :key="index"
+                >
+                    <div
+                        v-if="index < sliderBoxLimit"
+                        class="sw-cms-el-rezon-category-slider__category-item"
+                    >
+                        <div class="sw-cms-el-rezon-category-slider__category-content">
+                            <sw-icon name="regular-folder" size="48"></sw-icon>
+                            <p>{{ category.translated.name || category.name }}</p>
+                        </div>
+                    </div>
+                </template>
+                {% endblock %}
+            </template>
+        </div>
+        {% endblock %}
+
+        {% block sw_cms_element_rezon_category_slider_arrow_right %}
+        <div
+            v-if="hasNavigationArrows"
+            class="sw-cms-el-rezon-category-slider__navigation is--right-arrow"
+            :class="navArrowsClasses"
+        >
+            <mt-icon
+                class="sw-cms-el-rezon-category-slider__navigation-button"
+                name="regular-chevron-right"
+                size="24"
+            />
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}

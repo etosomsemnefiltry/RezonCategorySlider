@@ -1,0 +1,22 @@
+// Example: Style message box in header
+// Info: ThemeWare® variables are currently NOT possible!
+
+#tcinn-messagebox-example {
+  background-color: #0d5a93;
+  color: #ffffff;
+
+  div {
+    margin: 0 auto;
+    max-width: 1400px;
+
+    img {
+      float: left;
+      margin: 1.25rem 1.5rem 1.25rem 1.25rem;
+    }
+
+    p {
+      padding: 40px 0 0 0;
+      font-size: 1.2rem;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+    "name": "custom/rezon-category-slider",
+    "description": "Rezon Category Slider",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "REZON IT Solutions. Pavel Borik"
+        }
+    ],
+    "require": {
+        "shopware/core": "~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "RezonCategorySlider\\RezonCategorySlider",
+        "copyright": "(c) by REZON",
+        "label": {
+            "en-GB": "Rezon Category Slider Block",
+            "de-DE": "Rezon Category Slider Block"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "RezonCategorySlider\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,72 @@
+{% block component_category_box_hero %}
+    {% set category = category %}
+    {% set name = category.translated.name %}
+    {% set id = category.id %}
+    {% set media = category.media|first %}
+
+    <div class="card category-hero-card">
+        <div class="category-hero-card__inner">
+            {% block component_category_box_hero_image %}
+                <div class="category-hero-card__image-container">
+                    {% if media and media.media %}
+                        {% block component_category_box_hero_image_link %}
+                            <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                               class="category-hero-card__image-link"
+                               title="{{ name }}">
+                                {% block component_category_box_hero_image_element %}
+                                    <img src="{{ media.media.url }}"
+                                         class="category-hero-card__image img-fluid"
+                                         alt="{{ media.media.translated.alt ?: name }}"
+                                         title="{{ media.media.translated.title ?: name }}">
+                                {% endblock %}
+                            </a>
+                        {% endblock %}
+                    {% else %}
+                        {% block component_category_box_hero_image_placeholder %}
+                            <div class="category-hero-card__image-placeholder">
+                                {% sw_icon 'placeholder' style {'size': 'fluid'} %}
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+                </div>
+            {% endblock %}
+
+            {% block component_category_box_hero_content %}
+                <div class="category-hero-card__content">
+                    {% block component_category_box_hero_name %}
+                        <h3 class="category-hero-card__name">
+                            {% if media and media.media %}
+                                <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                                   class="h1 category-hero-card__name-link"
+                                   title="{{ name }}">
+                                    {{ name }}
+                                </a>
+                            {% else %}
+                                {{ name }}
+                            {% endif %}
+                        </h3>
+                    {% endblock %}
+
+                    {% block component_category_box_hero_description %}
+                        {% if category.translated.description %}
+                            <div class="category-hero-card__description">
+                                {{ category.translated.description|striptags|slice(0, 120) }}{% if category.translated.description|length > 120 %}...{% endif %}
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block component_category_box_hero_action %}
+                        <div class="category-hero-card__action">
+                            <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                               class="btn category-hero-card__button"
+                               title="{{ name }}">
+                                zur Kategorie
+                            </a>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+

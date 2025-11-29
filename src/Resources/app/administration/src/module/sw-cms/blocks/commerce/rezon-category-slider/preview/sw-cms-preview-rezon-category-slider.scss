@@ -1,0 +1,21 @@
+.sw-cms-preview-rezon-category-slider {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 20px 1fr 20px;
+    grid-gap: 5px;
+    padding: 15px;
+
+    .sw-cms-preview-rezon-category-slider__category-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        text-align: center;
+
+        p {
+            margin: 0;
+            font-size: 12px;
+        }
+    }
+}

@@ -87,12 +87,12 @@ export default {
         },
 
         categories() {
-            // Если есть данные из resolver (storefront)
+            // If data exists from resolver (storefront)
             if (this.element.data && this.element.data.length > 0) {
                 return this.element.data;
             }
 
-            // Если есть загруженная коллекция (admin)
+            // If loaded collection exists (admin)
             if (this.categoryCollection && this.categoryCollection.length > 0) {
                 return this.categoryCollection;
             }
@@ -110,14 +110,13 @@ export default {
 
         'element.config.categories.value': {
             handler(newValue) {
-                // Загружаем категории при изменении
-                if (newValue && Array.isArray(newValue)) {
+                // Load categories on change
+                if (newValue && Array.isArray(newValue) && newValue.length > 0) {
                     this.loadCategories();
                 } else {
                     this.categoryCollection = null;
                 }
             },
-            immediate: true,
             deep: true,
         },
 
@@ -140,6 +139,11 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initElementData('rezon-category-slider');
+            
+            // Load categories on initialization if they exist
+            if (this.element.config.categories.value && this.element.config.categories.value.length > 0) {
+                this.loadCategories();
+            }
         },
 
         mountedComponent() {
@@ -173,7 +177,7 @@ export default {
         },
 
         setSliderRowLimit() {
-            // Всегда показываем 3 элемента
+            // Always show 3 elements
             this.sliderBoxLimit = 3;
         },
 

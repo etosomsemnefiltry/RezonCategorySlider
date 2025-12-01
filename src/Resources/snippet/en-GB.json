@@ -8,11 +8,41 @@
       "config": {
         "label": {
           "title": "Title",
-          "selection": "Select categories"
+          "selection": "Select categories",
+          "minWidth": "Min width",
+          "border": "Border",
+          "navigationArrows": "Navigation arrows"
         },
         "placeholder": {
           "title": "Enter title",
-          "selection": "Select categories for the slider"
+          "selection": "Select categories for the slider",
+          "minWidth": "e.g. 300px"
+        },
+        "helpText": {
+          "displayMode": "How should the image be displayed?",
+          "minWidth": "Minimum width of each element in the slider"
+        }
+      }
+    }
+  },
+  "sw-cms": {
+    "elements": {
+      "categorySlider": {
+        "config": {
+          "label": {
+            "title": "Title",
+            "minWidth": "Min width",
+            "border": "Border",
+            "navigationArrows": "Navigation arrows"
+          },
+          "placeholder": {
+            "title": "Enter title",
+            "minWidth": "e.g. 300px"
+          },
+          "helpText": {
+            "displayMode": "How should the image be displayed?",
+            "minWidth": "Minimum width of each element in the slider"
+          }
         }
       }
     }

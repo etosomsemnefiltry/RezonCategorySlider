@@ -8,11 +8,41 @@
       "config": {
         "label": {
           "title": "Titel",
-          "selection": "Kategorien auswählen"
+          "selection": "Kategorien auswählen",
+          "minWidth": "Minimale Breite",
+          "border": "Rahmen",
+          "navigationArrows": "Navigationspfeile"
         },
         "placeholder": {
           "title": "Titel eingeben",
-          "selection": "Kategorien für den Slider auswählen"
+          "selection": "Kategorien für den Slider auswählen",
+          "minWidth": "z.B. 300px"
+        },
+        "helpText": {
+          "displayMode": "Wie soll das Bild dargestellt werden?",
+          "minWidth": "Minimale Breite jedes Elements im Slider"
+        }
+      }
+    }
+  },
+  "sw-cms": {
+    "elements": {
+      "categorySlider": {
+        "config": {
+          "label": {
+            "title": "Titel",
+            "minWidth": "Minimale Breite",
+            "border": "Rahmen",
+            "navigationArrows": "Navigationspfeile"
+          },
+          "placeholder": {
+            "title": "Titel eingeben",
+            "minWidth": "z.B. 300px"
+          },
+          "helpText": {
+            "displayMode": "Wie soll das Bild dargestellt werden?",
+            "minWidth": "Minimale Breite jedes Elements im Slider"
+          }
         }
       }
     }

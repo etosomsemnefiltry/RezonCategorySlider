@@ -2,7 +2,7 @@ import template from './sw-cms-el-config-rezon-category-slider.html.twig';
 import './sw-cms-el-config-rezon-category-slider.scss';
 
 const { Mixin } = Shopware;
-const { Criteria } = Shopware.Data;
+const { Criteria, EntityCollection } = Shopware.Data;
 
 /**
  * @private
@@ -20,7 +20,17 @@ export default {
         Mixin.getByName('cms-element'),
     ],
 
+    data() {
+        return {
+            categoryCollection: null,
+        };
+    },
+
     computed: {
+        categoryRepository() {
+            return this.repositoryFactory.create('category');
+        },
+
         categoryCriteria() {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
@@ -109,6 +119,15 @@ export default {
         },
     },
 
+    watch: {
+        categoryCollection: {
+            handler() {
+                this.updateCategoriesConfig();
+            },
+            deep: true,
+        },
+    },
+
     created() {
         this.createdComponent();
     },
@@ -116,6 +135,51 @@ export default {
     methods: {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
+            this.initCategoryCollection();
+        },
+
+        initCategoryCollection() {
+            const categoryIds = this.element.config.categories.value;
+
+            if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) {
+                this.categoryCollection = new EntityCollection(
+                    this.categoryRepository.route,
+                    this.categoryRepository.schema.entity,
+                    Shopware.Context.api,
+                    this.categoryCriteria,
+                );
+                return;
+            }
+
+            const criteria = new Criteria(1, 100);
+            criteria.setIds(categoryIds);
+            criteria.addAssociation('media');
+
+            this.categoryRepository
+                .search(criteria, {
+                    ...Shopware.Context.api,
+                    inheritance: true,
+                })
+                .then((result) => {
+                    this.categoryCollection = result;
+                })
+                .catch(() => {
+                    this.categoryCollection = new EntityCollection(
+                        this.categoryRepository.route,
+                        this.categoryRepository.schema.entity,
+                        Shopware.Context.api,
+                        this.categoryCriteria,
+                    );
+                });
+        },
+
+        updateCategoriesConfig() {
+            if (!this.categoryCollection) {
+                this.element.config.categories.value = [];
+                return;
+            }
+
+            this.element.config.categories.value = this.categoryCollection.map((category) => category.id);
         },
     },
 };

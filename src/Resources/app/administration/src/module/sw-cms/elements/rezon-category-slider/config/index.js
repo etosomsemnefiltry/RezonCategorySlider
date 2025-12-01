@@ -34,7 +34,6 @@ export default {
         categoryCriteria() {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
-            criteria.addFilter(Criteria.equals('active', true));
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
             return criteria;
         },
@@ -157,7 +156,10 @@ export default {
             criteria.addAssociation('media');
 
             this.categoryRepository
-                .search(criteria, Shopware.Context.api)
+                .search(criteria, {
+                    ...Shopware.Context.api,
+                    inheritance: true,
+                })
                 .then((result) => {
                     this.categoryCollection = result;
                 })

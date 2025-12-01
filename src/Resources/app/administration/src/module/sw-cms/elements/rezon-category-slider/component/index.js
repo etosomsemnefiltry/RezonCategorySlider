@@ -147,13 +147,11 @@ export default {
             const categoryRepository = this.repositoryFactory.create('category');
             const criteria = new Criteria(1, 100);
             criteria.setIds(categoryIds);
+            criteria.addFilter(Criteria.equals('active', true));
             criteria.addAssociation('media');
 
             categoryRepository
-                .search(criteria, {
-                    ...Shopware.Context.api,
-                    inheritance: true,
-                })
+                .search(criteria, Shopware.Context.api)
                 .then((result) => {
                     this.loadedCategories = result;
                 })

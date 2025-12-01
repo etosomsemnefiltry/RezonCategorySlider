@@ -10,16 +10,10 @@ use Shopware\Core\Content\Cms\DataResolver\Element\AbstractCmsElementResolver;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
 {
-    private SalesChannelRepository $categoryRepository;
-
-    public function __construct(SalesChannelRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
 
     public function getType(): string
     {
@@ -43,6 +37,7 @@ class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('id', $categoryIds));
+        $criteria->addFilter(new EqualsFilter('active', true));
         $criteria->addAssociation('media');
         $criteria->addAssociation('seoUrls');
 

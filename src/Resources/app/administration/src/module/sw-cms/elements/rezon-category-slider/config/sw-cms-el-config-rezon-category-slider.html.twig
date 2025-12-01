@@ -55,10 +55,9 @@
 
                 {% block sw_cms_element_rezon_category_slider_config_content_categories %}
                 <sw-entity-multi-select
-                    v-model:entity-collection="categoryCollection"
+                    v-model="element.config.categories.value"
                     entity="category"
                     label="Category"
-                    label-property="name"
                     placeholder="Select categories"
                     :criteria="categoryCriteria"
                 />

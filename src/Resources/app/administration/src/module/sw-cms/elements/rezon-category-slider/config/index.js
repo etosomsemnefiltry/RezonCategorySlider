@@ -24,7 +24,7 @@ export default {
         categoryCriteria() {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
-            criteria.addSorting(Criteria.sort('name', 'ASC'));
+            criteria.addSorting(Criteria.sort('name', 'ASC', false));
             return criteria;
         },
 

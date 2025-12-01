@@ -9,18 +9,20 @@
         "label": {
           "title": "Titel",
           "selection": "Kategorien auswählen",
+          "category": "Kategorie",
+          "includeChildCategories": "Unterkategorien einschließen",
           "minWidth": "Minimale Breite",
           "border": "Rahmen",
           "navigationArrows": "Navigationspfeile"
         },
         "placeholder": {
           "title": "Titel eingeben",
-          "selection": "Kategorien für den Slider auswählen",
-          "minWidth": "z.B. 300px"
+          "selection": "Kategorien für den Slider auswählen"
         },
         "helpText": {
           "displayMode": "Wie soll das Bild dargestellt werden?",
-          "minWidth": "Minimale Breite jedes Elements im Slider"
+          "minWidth": "Minimale Breite jedes Elements im Slider",
+          "includeChildCategories": "Anzahl der Ebenen von Unterkategorien, die eingeschlossen werden sollen"
         }
       }
     }

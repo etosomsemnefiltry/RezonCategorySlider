@@ -34,6 +34,10 @@ Shopware.Service('cmsService').registerCmsElement({
             source: 'static',
             value: '',
         },
+        includeChildCategories: {
+            source: 'static',
+            value: 1,
+        },
         displayMode: {
             source: 'static',
             value: 'standard',

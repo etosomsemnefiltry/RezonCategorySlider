@@ -34,7 +34,6 @@
                 class="sw-cms-el-config-product-slider__tab-content"
             >
                 {% block sw_cms_element_product_slider_config_content_title %}
-
                 <mt-text-field
                     v-model="element.config.title.value"
                     class="sw-cms-el-config-rezon-category-slider__tab-content-title"
@@ -43,11 +42,22 @@
                 />
                 {% endblock %}
 
+                {% block sw_cms_element_rezon_category_slider_config_content_include_child_categories %}
+                <mt-number-field
+                    v-model="element.config.includeChildCategories.value"
+                    class="sw-cms-el-config-rezon-category-slider__tab-content-include-child"
+                    :label="$tc('rezon-category-slider.element.config.label.includeChildCategories')"
+                    :help-text="$tc('rezon-category-slider.element.config.helpText.includeChildCategories')"
+                    number-type="int"
+                    :min="0"
+                />
+                {% endblock %}
+
                 {% block sw_cms_element_rezon_category_slider_config_content_categories %}
                 <sw-entity-multi-select
                     v-model="element.config.categories.value"
                     entity="category"
-                    :label="$tc('rezon-category-slider.element.config.label.selection')"
+                    :label="$tc('rezon-category-slider.element.config.label.category')"
                     :placeholder="$tc('rezon-category-slider.element.config.placeholder.selection')"
                     :criteria="categoryCriteria"
                 />

@@ -9,18 +9,20 @@
         "label": {
           "title": "Title",
           "selection": "Select categories",
+          "category": "Category",
+          "includeChildCategories": "Include child categories",
           "minWidth": "Min width",
           "border": "Border",
           "navigationArrows": "Navigation arrows"
         },
         "placeholder": {
           "title": "Enter title",
-          "selection": "Select categories for the slider",
-          "minWidth": "e.g. 300px"
+          "selection": "Select categories for the slider"
         },
         "helpText": {
           "displayMode": "How should the image be displayed?",
-          "minWidth": "Minimum width of each element in the slider"
+          "minWidth": "Minimum width of each element in the slider",
+          "includeChildCategories": "Number of child category levels to include"
         }
       }
     }

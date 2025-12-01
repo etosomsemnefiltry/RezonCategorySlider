@@ -173,41 +173,7 @@ export default {
         },
 
         onCategoryCollectionUpdate(collection) {
-            if (!collection || collection.length === 0) {
-                this.categoryCollection = collection;
-                return;
-            }
-
-            // Remove duplicates and filter
-            const categoriesArray = Array.from(collection);
-            const seenIds = new Set();
-            const uniqueCategories = categoriesArray.filter((cat) => {
-                if (seenIds.has(cat.id)) {
-                    return false;
-                }
-                seenIds.add(cat.id);
-                return true;
-            });
-
-            // Filter: show only root categories (parentId is null) and their direct children (level 1)
-            const rootCategories = uniqueCategories.filter((cat) => !cat.parentId || cat.parentId === null);
-            const rootCategoryIds = new Set(rootCategories.map((cat) => cat.id));
-            const firstLevelChildren = uniqueCategories.filter(
-                (cat) => cat.parentId && cat.parentId !== null && rootCategoryIds.has(cat.parentId)
-            );
-
-            const filteredCategories = [...rootCategories, ...firstLevelChildren];
-
-            // Create filtered collection
-            const filteredCollection = new EntityCollection(
-                this.categoryRepository.route,
-                this.categoryRepository.schema.entity,
-                Shopware.Context.api,
-                this.categoryCriteria,
-            );
-            filteredCategories.forEach((cat) => filteredCollection.add(cat));
-            
-            this.categoryCollection = filteredCollection;
+            this.categoryCollection = collection;
         },
 
         updateCategoriesConfig() {

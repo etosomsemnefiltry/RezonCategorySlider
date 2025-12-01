@@ -122,7 +122,10 @@ export default {
 
     watch: {
         categoryCollection: {
-            handler() {
+            handler(newCollection) {
+                if (newCollection && newCollection.length > 0) {
+                    this.removeDuplicatesAndFilter();
+                }
                 this.updateCategoriesConfig();
             },
             deep: true,
@@ -170,6 +173,53 @@ export default {
                         this.categoryCriteria,
                     );
                 });
+        },
+
+        onCategoryCollectionUpdate(collection) {
+            this.categoryCollection = collection;
+        },
+
+        removeDuplicatesAndFilter() {
+            if (!this.categoryCollection || this.categoryCollection.length === 0) {
+                return;
+            }
+
+            // Convert to array and remove duplicates by ID
+            const categoriesArray = Array.from(this.categoryCollection);
+            const uniqueCategories = Array.from(
+                new Map(categoriesArray.map((cat) => [cat.id, cat])).values()
+            );
+
+            // Filter: show only root categories (parentId is null) and their direct children (level 1)
+            const rootCategories = uniqueCategories.filter((cat) => !cat.parentId);
+            const rootCategoryIds = new Set(rootCategories.map((cat) => cat.id));
+            const firstLevelChildren = uniqueCategories.filter(
+                (cat) => cat.parentId && rootCategoryIds.has(cat.parentId)
+            );
+
+            const filteredCategories = [...rootCategories, ...firstLevelChildren];
+
+            // Update collection if filtered
+            if (filteredCategories.length !== uniqueCategories.length) {
+                const filteredCollection = new EntityCollection(
+                    this.categoryRepository.route,
+                    this.categoryRepository.schema.entity,
+                    Shopware.Context.api,
+                    this.categoryCriteria,
+                );
+                filteredCategories.forEach((cat) => filteredCollection.add(cat));
+                this.categoryCollection = filteredCollection;
+            } else if (uniqueCategories.length !== categoriesArray.length) {
+                // Only remove duplicates, keep all categories
+                const deduplicatedCollection = new EntityCollection(
+                    this.categoryRepository.route,
+                    this.categoryRepository.schema.entity,
+                    Shopware.Context.api,
+                    this.categoryCriteria,
+                );
+                uniqueCategories.forEach((cat) => deduplicatedCollection.add(cat));
+                this.categoryCollection = deduplicatedCollection;
+            }
         },
 
         updateCategoriesConfig() {

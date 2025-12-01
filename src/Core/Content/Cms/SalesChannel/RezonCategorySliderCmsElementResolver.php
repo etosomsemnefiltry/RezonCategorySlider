@@ -42,7 +42,7 @@ class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
         $criteria->addAssociation('seoUrls');
 
         $criteriaCollection = new CriteriaCollection();
-        $criteriaCollection->add('category_' . $slot->getUniqueIdentifier(), 'category', $criteria);
+        $criteriaCollection->add('category_' . $slot->getUniqueIdentifier(), CategoryCollection::class, $criteria);
 
         return $criteriaCollection;
     }

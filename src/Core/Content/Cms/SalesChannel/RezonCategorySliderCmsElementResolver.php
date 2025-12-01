@@ -10,13 +10,13 @@ use Shopware\Core\Content\Cms\DataResolver\Element\AbstractCmsElementResolver;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepositoryInterface;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 
 class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
 {
-    private SalesChannelRepositoryInterface $categoryRepository;
+    private SalesChannelRepository $categoryRepository;
 
-    public function __construct(SalesChannelRepositoryInterface $categoryRepository)
+    public function __construct(SalesChannelRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }

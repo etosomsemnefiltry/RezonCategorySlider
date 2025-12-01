@@ -13,11 +13,13 @@
           "includeChildCategories": "Unterkategorien einschließen",
           "minWidth": "Minimale Breite",
           "border": "Rahmen",
-          "navigationArrows": "Navigationspfeile"
+          "navigationArrows": "Navigationspfeile",
+          "boxLayout": "Layout-Typ"
         },
         "placeholder": {
           "title": "Titel eingeben",
-          "selection": "Kategorien für den Slider auswählen"
+          "selection": "Kategorien für den Slider auswählen",
+          "minWidth": "z.B. 300px"
         },
         "helpText": {
           "displayMode": "Wie soll das Bild dargestellt werden?",

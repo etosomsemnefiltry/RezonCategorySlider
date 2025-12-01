@@ -23,7 +23,7 @@ export default {
     data() {
         return {
             sliderBoxLimit: 3,
-            categoryCollection: null,
+            loadedCategories: null,
         };
     },
 
@@ -87,43 +87,36 @@ export default {
         },
 
         categories() {
-            // If data exists from resolver (storefront)
+            // Storefront: data from resolver
             if (this.element.data && this.element.data.length > 0) {
                 return this.element.data;
             }
 
-            // If loaded collection exists (admin)
-            if (this.categoryCollection && this.categoryCollection.length > 0) {
-                return this.categoryCollection;
-            }
-
-            return null;
+            // Admin: return loaded categories
+            return this.loadedCategories;
         },
     },
 
     watch: {
-        'element.config.elMinWidth.value': {
-            handler() {
-                this.setSliderRowLimit();
-            },
+        'element.config.elMinWidth.value'() {
+            this.setSliderRowLimit();
         },
 
         'element.config.categories.value': {
-            handler(newValue) {
-                // Load categories on change
-                if (newValue && Array.isArray(newValue) && newValue.length > 0) {
-                    this.loadCategories();
+            handler(categoryIds) {
+                if (categoryIds && Array.isArray(categoryIds) && categoryIds.length > 0) {
+                    this.loadCategories(categoryIds);
                 } else {
-                    this.categoryCollection = null;
+                    this.loadedCategories = null;
                 }
             },
-            deep: true,
+            immediate: true,
         },
 
         currentDeviceView() {
-            setTimeout(() => {
+            this.$nextTick(() => {
                 this.setSliderRowLimit();
-            }, 400);
+            });
         },
     },
 
@@ -139,22 +132,15 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initElementData('rezon-category-slider');
-            
-            // Load categories on initialization if they exist
-            if (this.element.config.categories.value && this.element.config.categories.value.length > 0) {
-                this.loadCategories();
-            }
         },
 
         mountedComponent() {
             this.setSliderRowLimit();
         },
 
-        loadCategories() {
-            const categoryIds = this.element.config.categories.value;
-
-            if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) {
-                this.categoryCollection = null;
+        loadCategories(categoryIds) {
+            if (!categoryIds || categoryIds.length === 0) {
+                this.loadedCategories = null;
                 return;
             }
 
@@ -169,15 +155,14 @@ export default {
                     inheritance: true,
                 })
                 .then((result) => {
-                    this.categoryCollection = result;
+                    this.loadedCategories = result;
                 })
                 .catch(() => {
-                    this.categoryCollection = null;
+                    this.loadedCategories = null;
                 });
         },
 
         setSliderRowLimit() {
-            // Always show 3 elements
             this.sliderBoxLimit = 3;
         },
 

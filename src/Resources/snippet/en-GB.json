@@ -13,11 +13,13 @@
           "includeChildCategories": "Include child categories",
           "minWidth": "Min width",
           "border": "Border",
-          "navigationArrows": "Navigation arrows"
+          "navigationArrows": "Navigation arrows",
+          "boxLayout": "Layout type"
         },
         "placeholder": {
           "title": "Enter title",
-          "selection": "Select categories for the slider"
+          "selection": "Select categories for the slider",
+          "minWidth": "e.g. 300px"
         },
         "helpText": {
           "displayMode": "How should the image be displayed?",

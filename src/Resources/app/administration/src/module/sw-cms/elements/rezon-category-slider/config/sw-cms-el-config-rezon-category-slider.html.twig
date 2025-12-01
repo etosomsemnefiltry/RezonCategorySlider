@@ -37,8 +37,8 @@
                 <mt-text-field
                     v-model="element.config.title.value"
                     class="sw-cms-el-config-rezon-category-slider__tab-content-title"
-                    :label="$tc('sw-cms.elements.categorySlider.config.label.title')"
-                    :placeholder="$tc('sw-cms.elements.categorySlider.config.placeholder.title')"
+                    label="Title"
+                    placeholder="Category slider title"
                 />
                 {% endblock %}
 
@@ -46,8 +46,8 @@
                 <mt-number-field
                     v-model="element.config.includeChildCategories.value"
                     class="sw-cms-el-config-rezon-category-slider__tab-content-include-child"
-                    :label="$tc('rezon-category-slider.element.config.label.includeChildCategories')"
-                    :help-text="$tc('rezon-category-slider.element.config.helpText.includeChildCategories')"
+                    label="Include child categories"
+                    help-text="Number of child category levels to include"
                     number-type="int"
                     :min="0"
                 />
@@ -57,8 +57,8 @@
                 <sw-entity-multi-select
                     v-model="element.config.categories.value"
                     entity="category"
-                    :label="$tc('rezon-category-slider.element.config.label.category')"
-                    :placeholder="$tc('rezon-category-slider.element.config.placeholder.selection')"
+                    label="Category"
+                    placeholder="Select categories"
                     :criteria="categoryCriteria"
                 />
                 {% endblock %}
@@ -76,7 +76,7 @@
                         v-model="element.config.displayMode.value"
                         class="sw-cms-el-config-rezon-category-slider__tab-settings-display-mode"
                         :label="$tc('sw-cms.elements.general.config.label.displayMode')"
-                        :help-text="$tc('sw-cms.elements.categorySlider.config.helpText.displayMode')"
+                        help-text="How should the image be displayed?"
                         :options="displayModeOptions"
                     />
                     {% endblock %}
@@ -88,9 +88,9 @@
                     <mt-text-field
                         v-model="element.config.elMinWidth.value"
                         class="sw-cms-el-config-rezon-category-slider__tab-settings-alignment-min-width"
-                        :label="$tc('sw-cms.elements.categorySlider.config.label.minWidth')"
-                        :placeholder="$tc('sw-cms.elements.categorySlider.config.placeholder.minWidth')"
-                        :help-text="$tc('sw-cms.elements.categorySlider.config.helpText.minWidth')"
+                        label="Min width"
+                        placeholder="e.g. 300px"
+                        help-text="Minimum width of each element in the slider"
                     />
                     {% endblock %}
 
@@ -110,7 +110,7 @@
                     <mt-select
                         v-model="element.config.boxLayout.value"
                         class="sw-cms-el-config-rezon-category-slider__tab-settings-layout-type"
-                        :label="$tc('sw-cms.elements.categoryBox.config.label.layoutType')"
+                        label="Layout type"
                         :options="boxLayoutOptions"
                     />
                     {% endblock %}
@@ -119,7 +119,7 @@
                     <mt-switch
                         v-model="element.config.border.value"
                         class="sw-cms-el-config-rezon-category-slider__tab-settings-layout-border"
-                        :label="$tc('sw-cms.elements.categorySlider.config.label.border')"
+                        label="Border"
                         bordered
                     />
                     {% endblock %}
@@ -130,7 +130,7 @@
                     <mt-select
                         v-model="element.config.navigationArrows.value"
                         class="sw-cms-el-config-rezon-category-slider__tab-settings-navigation-arrows"
-                        :label="$tc('sw-cms.elements.categorySlider.config.label.navigationArrows')"
+                        label="Navigation arrows"
                         :options="arrowOptions"
                         @update:model-value="emitUpdateEl"
                     />

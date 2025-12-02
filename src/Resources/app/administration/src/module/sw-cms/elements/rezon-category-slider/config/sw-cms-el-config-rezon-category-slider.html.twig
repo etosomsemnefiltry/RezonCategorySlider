@@ -67,11 +67,14 @@
                         <span class="sw-cms-el-config-rezon-category-slider__category-label-main">
                             {{ getCategoryDisplayName(item) }}
                         </span>
+                    </template>
+
+                    <template #result-description="{ item }">
                         <span
                             v-if="getCategoryBreadcrumbLabel(item)"
                             class="sw-cms-el-config-rezon-category-slider__category-label-parent"
                         >
-                            ({{ getCategoryBreadcrumbLabel(item) }})
+                            {{ getCategoryBreadcrumbLabel(item) }}
                         </span>
                     </template>
                 </sw-entity-multi-select>

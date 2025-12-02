@@ -61,12 +61,19 @@
                     label-property="name"
                     placeholder="Select categories"
                     :criteria="categoryCriteria"
-                    @search-term-change="onCategorySearch"
-                />
-
-                <div class="sw-cms-el-config-rezon-category-slider__category-hint">
-                    <p>{{ $tc('rezon-category-slider.element.config.hint.categorySearch') }}</p>
-                </div>
+                >
+                    <template #result-label="{ item }">
+                        <span class="sw-cms-el-config-rezon-category-slider__category-label-main">
+                            {{ getCategoryDisplayName(item) }}
+                        </span>
+                        <span
+                            v-if="getCategoryBreadcrumbLabel(item)"
+                            class="sw-cms-el-config-rezon-category-slider__category-label-parent"
+                        >
+                            ({{ getCategoryBreadcrumbLabel(item) }})
+                        </span>
+                    </template>
+                </sw-entity-multi-select>
                 {% endblock %}
             </sw-container>
             {% endblock %}

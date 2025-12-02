@@ -25,9 +25,6 @@
           "displayMode": "Wie soll das Bild dargestellt werden?",
           "minWidth": "Minimale Breite jedes Elements im Slider",
           "includeChildCategories": "Anzahl der Ebenen von Unterkategorien, die eingeschlossen werden sollen"
-        },
-        "hint": {
-          "categorySearch": "Gib zuerst den Namen der Hauptkategorie ein, dann erscheinen ihre Unterkategorien in der Liste."
         }
       }
     }

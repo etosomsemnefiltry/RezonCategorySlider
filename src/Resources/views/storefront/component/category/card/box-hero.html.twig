@@ -2,22 +2,30 @@
     {% set category = category %}
     {% set name = category.translated.name %}
     {% set id = category.id %}
-    {% set media = category.media|first %}
+    {% set media = null %}
+    {% if category.media is not null %}
+        {% if category.media.url is defined %}
+            {% set media = category.media %}
+        {% else %}
+            {% set media = category.media|first %}
+        {% endif %}
+    {% endif %}
 
     <div class="card category-hero-card">
         <div class="category-hero-card__inner">
             {% block component_category_box_hero_image %}
                 <div class="category-hero-card__image-container">
-                    {% if media and media.media %}
+                    {% if media is not null %}
                         {% block component_category_box_hero_image_link %}
-                            <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                            <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
                                class="category-hero-card__image-link"
-                               title="{{ name }}">
+                               title="{{ name }}"
+                               {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
                                 {% block component_category_box_hero_image_element %}
-                                    <img src="{{ media.media.url }}"
+                                    <img src="{{ media.url }}"
                                          class="category-hero-card__image img-fluid"
-                                         alt="{{ media.media.translated.alt ?: name }}"
-                                         title="{{ media.media.translated.title ?: name }}">
+                                         alt="{{ media.translated.alt ?: name }}"
+                                         title="{{ media.translated.title ?: name }}">
                                 {% endblock %}
                             </a>
                         {% endblock %}
@@ -35,10 +43,11 @@
                 <div class="category-hero-card__content">
                     {% block component_category_box_hero_name %}
                         <h3 class="category-hero-card__name">
-                            {% if media and media.media %}
-                                <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                            {% if media is not null %}
+                                <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
                                    class="h1 category-hero-card__name-link"
-                                   title="{{ name }}">
+                                   title="{{ name }}"
+                                   {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
                                     {{ name }}
                                 </a>
                             {% else %}
@@ -57,9 +66,10 @@
 
                     {% block component_category_box_hero_action %}
                         <div class="category-hero-card__action">
-                            <a href="{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}"
+                            <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
                                class="btn category-hero-card__button"
-                               title="{{ name }}">
+                               title="{{ name }}"
+                               {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
                                 zur Kategorie
                             </a>
                         </div>

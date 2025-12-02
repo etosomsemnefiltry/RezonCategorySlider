@@ -61,7 +61,13 @@
                     label-property="name"
                     placeholder="Select categories"
                     :criteria="categoryCriteria"
+                    @search-term-change="onCategorySearch"
                 />
+
+                <div class="sw-cms-el-config-rezon-category-slider__category-hint">
+                    <p><strong>DE:</strong> Gib zuerst den Namen der Hauptkategorie ein, dann erscheinen ihre Unterkategorien in der Liste.</p>
+                    <p><strong>EN:</strong> Type the main category name first; its child categories will then appear in the list.</p>
+                </div>
                 {% endblock %}
             </sw-container>
             {% endblock %}

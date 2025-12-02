@@ -23,6 +23,8 @@ export default {
     data() {
         return {
             categoryCollection: null,
+            searchTerm: '',
+            categoryFilterIds: [],
         };
     },
 
@@ -35,6 +37,13 @@ export default {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
+
+            if (this.categoryFilterIds.length > 0) {
+                criteria.addFilter(Criteria.equalsAny('id', this.categoryFilterIds));
+            } else if (this.searchTerm) {
+                criteria.setTerm(this.searchTerm);
+            }
+
             return criteria;
         },
 
@@ -136,6 +145,42 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initCategoryCollection();
+        },
+
+        async onCategorySearch(term) {
+            this.searchTerm = term;
+
+            if (!term) {
+                this.categoryFilterIds = [];
+                return;
+            }
+
+            const parentCriteria = new Criteria(1, 50);
+            parentCriteria.setTerm(term);
+
+            const parents = await this.categoryRepository.search(parentCriteria, {
+                ...Shopware.Context.api,
+                inheritance: true,
+            });
+
+            if (!parents.length) {
+                this.categoryFilterIds = [];
+                return;
+            }
+
+            const descendantCriteria = new Criteria(1, 500);
+            descendantCriteria.addFilter(Criteria.multi('OR', parents.map((parent) => {
+                return Criteria.contains('path', `|${parent.id}|`);
+            })));
+
+            const descendants = await this.categoryRepository.search(descendantCriteria, {
+                ...Shopware.Context.api,
+                inheritance: true,
+            });
+
+            const parentIds = parents.map((category) => category.id);
+            const descendantIds = descendants.map((category) => category.id);
+            this.categoryFilterIds = [...new Set([...parentIds, ...descendantIds])];
         },
 
         initCategoryCollection() {

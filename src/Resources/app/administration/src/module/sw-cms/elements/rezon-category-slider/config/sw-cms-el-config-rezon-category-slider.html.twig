@@ -61,6 +61,7 @@
                     label-property="name"
                     placeholder="Select categories"
                     :criteria="categoryCriteria"
+                    :fetch-function="fetchCategories"
                 >
                     <template #result-label="{ item }">
                         <span class="sw-cms-el-config-rezon-category-slider__category-label-main">

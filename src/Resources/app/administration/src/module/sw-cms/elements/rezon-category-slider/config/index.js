@@ -173,6 +173,40 @@ export default {
             return breadcrumbNames.slice(0, -1).join(' > ');
         },
 
+        getCategoryDisplayName(category) {
+            if (!category) {
+                return '';
+            }
+
+            if (category.translated && category.translated.name) {
+                return category.translated.name;
+            }
+
+            return category.name || '';
+        },
+
+        getCategoryBreadcrumbLabel(category) {
+            if (!category) {
+                return '';
+            }
+
+            const breadcrumb = (category.translated && category.translated.breadcrumb)
+                ? category.translated.breadcrumb
+                : category.breadcrumb;
+
+            if (!breadcrumb) {
+                return '';
+            }
+
+            const breadcrumbNames = Array.isArray(breadcrumb) ? breadcrumb : Object.values(breadcrumb);
+
+            if (breadcrumbNames.length <= 1) {
+                return '';
+            }
+
+            return breadcrumbNames.slice(0, -1).join(' > ');
+        },
+
         initCategoryCollection() {
             const categoryIds = this.element.config.categories.value;
 
@@ -215,6 +249,26 @@ export default {
             }
 
             this.element.config.categories.value = this.categoryCollection.map((category) => category.id);
+        },
+
+        fetchCategories(searchTerm = '', limit = 25) {
+            const criteria = new Criteria(1, limit);
+            criteria.addAssociation('media');
+            criteria.addSorting(Criteria.sort('name', 'ASC', false));
+
+            if (searchTerm) {
+                criteria.setTerm(searchTerm);
+            }
+
+            return this.categoryRepository
+                .search(criteria, {
+                    ...Shopware.Context.api,
+                    inheritance: true,
+                })
+                .then((result) => ({
+                    data: result,
+                    total: result.total,
+                }));
         },
     },
 };

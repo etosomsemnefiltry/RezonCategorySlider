@@ -25,6 +25,9 @@
           "displayMode": "How should the image be displayed?",
           "minWidth": "Minimum width of each element in the slider",
           "includeChildCategories": "Number of child category levels to include"
+        },
+        "hint": {
+          "categorySearch": "Type the main category name first; its child categories will then appear in the list."
         }
       }
     }

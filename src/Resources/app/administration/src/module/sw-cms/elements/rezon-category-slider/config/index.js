@@ -157,31 +157,31 @@ export default {
                 return '';
             }
 
-            // Попробуем получить хлебные крошки из разных источников
-            // В Shopware EntityCollection данные нормализуются, но проверим разные варианты
+            // Try to get breadcrumb from different sources
+            // In Shopware EntityCollection data is normalized, but we check different variants
             let breadcrumb = null;
             
-            // 1. Сначала пробуем получить из translated (приоритет)
+            // 1. First try to get from translated (priority)
             if (category.translated && category.translated.breadcrumb) {
                 breadcrumb = category.translated.breadcrumb;
             } 
-            // 2. Затем из обычного поля breadcrumb
+            // 2. Then from regular breadcrumb field
             else if (category.breadcrumb) {
                 breadcrumb = category.breadcrumb;
             }
-            // 3. Если данные в формате attributes (на случай, если не нормализованы)
+            // 3. If data is in attributes format (in case it's not normalized)
             else if (category.attributes && category.attributes.breadcrumb) {
                 breadcrumb = category.attributes.breadcrumb;
             }
             else if (category.attributes && category.attributes.translated && category.attributes.translated.breadcrumb) {
                 breadcrumb = category.attributes.translated.breadcrumb;
             }
-            // 4. Если хлебные крошки не загружены, пробуем построить путь из родительской категории
+            // 4. If breadcrumb is not loaded, try to build path from parent category
             else if (category.parent) {
                 const parentName = category.parent.translated?.name || category.parent.name || '';
                 const categoryName = this.getCategoryDisplayName(category);
                 if (parentName && parentName !== categoryName) {
-                    // Если есть родитель родителя, строим путь дальше
+                    // If there's a parent of parent, build path further
                     if (category.parent.parent) {
                         const grandParentName = category.parent.parent.translated?.name || category.parent.parent.name || '';
                         if (grandParentName && grandParentName !== parentName) {
@@ -196,12 +196,12 @@ export default {
                 return '';
             }
 
-            // Обрабатываем разные форматы хлебных крошек
-            // В JSON это массив: ["Deutsch 2.0", "Footer Service", "Wochenendtrip Berlin"]
+            // Process different breadcrumb formats
+            // In JSON it's an array: ["Deutsch 2.0", "Footer Service", "Wochenendtrip Berlin"]
             let breadcrumbNames = [];
             
             if (Array.isArray(breadcrumb)) {
-                // Фильтруем пустые значения и приводим к строкам
+                // Filter empty values and convert to strings
                 breadcrumbNames = breadcrumb.filter(item => item && String(item).trim()).map(item => String(item).trim());
             } else if (typeof breadcrumb === 'object' && breadcrumb !== null) {
                 breadcrumbNames = Object.values(breadcrumb).filter(item => item && String(item).trim()).map(item => String(item).trim());
@@ -209,12 +209,12 @@ export default {
                 breadcrumbNames = breadcrumb.split(' > ').filter(Boolean).map(item => item.trim());
             }
 
-            // Если массив пустой или содержит только один элемент (текущая категория), возвращаем пустую строку
+            // If array is empty or contains only one element (current category), return empty string
             if (breadcrumbNames.length <= 1) {
                 return '';
             }
 
-            // Убираем последний элемент (текущая категория) и объединяем остальные
+            // Remove last element (current category) and join the rest
             return breadcrumbNames.slice(0, -1).join(' > ');
         },
 

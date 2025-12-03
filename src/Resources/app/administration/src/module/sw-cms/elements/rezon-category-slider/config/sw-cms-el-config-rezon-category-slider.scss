@@ -27,6 +27,26 @@
         }
     }
 
+    &__category-label-main {
+        font-weight: 600;
+    }
+
+    &__category-label-parent {
+        color: #758ca3;
+        font-size: 12px;
+        margin-left: 4px;
+    }
+
+    .sw-select-result__result-item-text {
+        .sw-cms-el-config-rezon-category-slider__category-label-main {
+            display: inline-block;
+        }
+
+        .sw-cms-el-config-rezon-category-slider__category-label-parent {
+            display: inline-block;
+        }
+    }
+
     .has--two-elements {
         display: grid;
         grid-template-columns: 1fr 1fr;

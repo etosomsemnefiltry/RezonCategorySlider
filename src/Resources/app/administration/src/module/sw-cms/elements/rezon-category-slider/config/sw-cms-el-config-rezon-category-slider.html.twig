@@ -62,20 +62,40 @@
                     placeholder="Select categories"
                     :criteria="categoryCriteria"
                     :fetch-function="fetchCategories"
+                    class="sw-cms-el-config-rezon-category-slider__tab-content-categories"
                 >
-                    <template #result-label="{ item }">
+                    <template #selection-label-property="{ item }">
                         <span class="sw-cms-el-config-rezon-category-slider__category-label-main">
                             {{ getCategoryDisplayName(item) }}
                         </span>
-                    </template>
-
-                    <template #result-description="{ item }">
                         <span
                             v-if="getCategoryBreadcrumbLabel(item)"
                             class="sw-cms-el-config-rezon-category-slider__category-label-parent"
                         >
-                            {{ getCategoryBreadcrumbLabel(item) }}
+                            - {{ getCategoryBreadcrumbLabel(item) }}
                         </span>
+                    </template>
+                    <template #result-item="{ item, index }">
+                        <slot
+                            name="result-item"
+                            v-bind="{ item, index }"
+                        >
+                            <sw-select-result v-bind="{ item, index, selected: isSelected(item.id)}">
+                                {% block sw_entity_multi_select_category_result_label %}
+                                <span class="sw-select-result__result-item-text">
+                                    <span class="sw-cms-el-config-rezon-category-slider__category-label-main">
+                                        {{ getCategoryDisplayName(item) }}
+                                    </span>
+                                    <span
+                                        v-if="getCategoryBreadcrumbLabel(item)"
+                                        class="sw-cms-el-config-rezon-category-slider__category-label-parent"
+                                    >
+                                        - {{ getCategoryBreadcrumbLabel(item) }}
+                                    </span>
+                                </span>
+                                {% endblock %}
+                            </sw-select-result>
+                        </slot>
                     </template>
                 </sw-entity-multi-select>
                 {% endblock %}

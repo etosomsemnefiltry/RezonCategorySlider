@@ -34,6 +34,7 @@ export default {
         categoryCriteria() {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
+            criteria.addAssociation('parent');
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
 
             return criteria;
@@ -156,55 +157,73 @@ export default {
                 return '';
             }
 
-            const breadcrumb = (category.translated && category.translated.breadcrumb)
-                ? category.translated.breadcrumb
-                : category.breadcrumb;
+            // Попробуем получить хлебные крошки из разных источников
+            // В Shopware EntityCollection данные нормализуются, но проверим разные варианты
+            let breadcrumb = null;
+            
+            // 1. Сначала пробуем получить из translated (приоритет)
+            if (category.translated && category.translated.breadcrumb) {
+                breadcrumb = category.translated.breadcrumb;
+            } 
+            // 2. Затем из обычного поля breadcrumb
+            else if (category.breadcrumb) {
+                breadcrumb = category.breadcrumb;
+            }
+            // 3. Если данные в формате attributes (на случай, если не нормализованы)
+            else if (category.attributes && category.attributes.breadcrumb) {
+                breadcrumb = category.attributes.breadcrumb;
+            }
+            else if (category.attributes && category.attributes.translated && category.attributes.translated.breadcrumb) {
+                breadcrumb = category.attributes.translated.breadcrumb;
+            }
+            // 4. Если хлебные крошки не загружены, пробуем построить путь из родительской категории
+            else if (category.parent) {
+                const parentName = category.parent.translated?.name || category.parent.name || '';
+                const categoryName = this.getCategoryDisplayName(category);
+                if (parentName && parentName !== categoryName) {
+                    // Если есть родитель родителя, строим путь дальше
+                    if (category.parent.parent) {
+                        const grandParentName = category.parent.parent.translated?.name || category.parent.parent.name || '';
+                        if (grandParentName && grandParentName !== parentName) {
+                            return `${grandParentName} > ${parentName}`;
+                        }
+                    }
+                    return parentName;
+                }
+            }
 
             if (!breadcrumb) {
                 return '';
             }
 
-            const breadcrumbNames = Array.isArray(breadcrumb) ? breadcrumb : Object.values(breadcrumb);
+            // Обрабатываем разные форматы хлебных крошек
+            // В JSON это массив: ["Deutsch 2.0", "Footer Service", "Wochenendtrip Berlin"]
+            let breadcrumbNames = [];
+            
+            if (Array.isArray(breadcrumb)) {
+                // Фильтруем пустые значения и приводим к строкам
+                breadcrumbNames = breadcrumb.filter(item => item && String(item).trim()).map(item => String(item).trim());
+            } else if (typeof breadcrumb === 'object' && breadcrumb !== null) {
+                breadcrumbNames = Object.values(breadcrumb).filter(item => item && String(item).trim()).map(item => String(item).trim());
+            } else if (typeof breadcrumb === 'string') {
+                breadcrumbNames = breadcrumb.split(' > ').filter(Boolean).map(item => item.trim());
+            }
 
+            // Если массив пустой или содержит только один элемент (текущая категория), возвращаем пустую строку
             if (breadcrumbNames.length <= 1) {
                 return '';
             }
 
+            // Убираем последний элемент (текущая категория) и объединяем остальные
             return breadcrumbNames.slice(0, -1).join(' > ');
         },
 
-        getCategoryDisplayName(category) {
-            if (!category) {
-                return '';
+        isSelected(categoryId) {
+            if (!this.categoryCollection) {
+                return false;
             }
 
-            if (category.translated && category.translated.name) {
-                return category.translated.name;
-            }
-
-            return category.name || '';
-        },
-
-        getCategoryBreadcrumbLabel(category) {
-            if (!category) {
-                return '';
-            }
-
-            const breadcrumb = (category.translated && category.translated.breadcrumb)
-                ? category.translated.breadcrumb
-                : category.breadcrumb;
-
-            if (!breadcrumb) {
-                return '';
-            }
-
-            const breadcrumbNames = Array.isArray(breadcrumb) ? breadcrumb : Object.values(breadcrumb);
-
-            if (breadcrumbNames.length <= 1) {
-                return '';
-            }
-
-            return breadcrumbNames.slice(0, -1).join(' > ');
+            return this.categoryCollection.has(categoryId);
         },
 
         initCategoryCollection() {
@@ -223,6 +242,7 @@ export default {
             const criteria = new Criteria(1, 100);
             criteria.setIds(categoryIds);
             criteria.addAssociation('media');
+            criteria.addAssociation('parent');
 
             this.categoryRepository
                 .search(criteria, {
@@ -254,6 +274,7 @@ export default {
         fetchCategories(searchTerm = '', limit = 25) {
             const criteria = new Criteria(1, limit);
             criteria.addAssociation('media');
+            criteria.addAssociation('parent');
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
 
             if (searchTerm) {

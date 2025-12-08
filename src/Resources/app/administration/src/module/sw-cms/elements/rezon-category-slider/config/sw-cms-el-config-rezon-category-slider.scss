@@ -37,23 +37,12 @@
         margin-left: 4px;
     }
 
-    &__category-label-url {
-        font-size: 0.7rem;
-        color: $color-gray-400;
-        margin-left: 5px;
-        font-style: italic;
-    }
-
     .sw-select-result__result-item-text {
         .sw-cms-el-config-rezon-category-slider__category-label-main {
             display: inline-block;
         }
 
         .sw-cms-el-config-rezon-category-slider__category-label-parent {
-            display: inline-block;
-        }
-
-        .sw-cms-el-config-rezon-category-slider__category-label-url {
             display: inline-block;
         }
     }

@@ -74,6 +74,12 @@
                         >
                             - {{ getCategoryBreadcrumbLabel(item) }}
                         </span>
+                        <span
+                            v-if="getCategoryUrl(item)"
+                            class="sw-cms-el-config-rezon-category-slider__category-label-url"
+                        >
+                            ({{ getCategoryUrl(item) }})
+                        </span>
                     </template>
                     <template #result-item="{ item, index }">
                         <slot
@@ -91,6 +97,12 @@
                                         class="sw-cms-el-config-rezon-category-slider__category-label-parent"
                                     >
                                         - {{ getCategoryBreadcrumbLabel(item) }}
+                                    </span>
+                                    <span
+                                        v-if="getCategoryUrl(item)"
+                                        class="sw-cms-el-config-rezon-category-slider__category-label-url"
+                                    >
+                                        ({{ getCategoryUrl(item) }})
                                     </span>
                                 </span>
                                 {% endblock %}

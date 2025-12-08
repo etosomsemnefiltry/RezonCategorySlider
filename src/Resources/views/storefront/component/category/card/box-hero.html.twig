@@ -11,13 +11,33 @@
         {% endif %}
     {% endif %}
 
+    {# Generate absolute URL with domain and base path #}
+    {# External links already have full URL, use directly without any processing #}
+    {% set categoryUrl = null %}
+    {% set baseUrl = app.request.schemeAndHttpHost ~ app.request.basePath %}
+    
+    {% if category.url %}
+        {# Internal link - check if already has domain #}
+        {% if category.url matches '/^https?:\\/\\//' %}
+            {# Already has full URL, use as is #}
+            {% set categoryUrl = category.url %}
+        {% else %}
+            {# Relative link, add domain and base path #}
+            {% set categoryUrl = baseUrl ~ category.url %}
+        {% endif %}
+    {% else %}
+        {# No URL provided, generate SEO URL #}
+        {% set seoPath = seoUrl('frontend.navigation.page', {'navigationId': id}) %}
+        {% set categoryUrl = seoPath %}
+    {% endif %}
+
     <div class="card category-hero-card">
-        <div class="category-hero-card__inner">
+        <div class="category-hero-card__inner card-body">
             {% block component_category_box_hero_image %}
                 <div class="category-hero-card__image-container">
                     {% if media is not null %}
                         {% block component_category_box_hero_image_link %}
-                            <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
+                            <a href="{% if category.externalLink %}{{ category.externalLink }}{% else %}{{ categoryUrl }}{% endif %}"
                                class="category-hero-card__image-link"
                                title="{{ name }}"
                                {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
@@ -43,36 +63,13 @@
                 <div class="category-hero-card__content">
                     {% block component_category_box_hero_name %}
                         <h3 class="category-hero-card__name">
-                            {% if media is not null %}
-                                <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
-                                   class="h1 category-hero-card__name-link"
-                                   title="{{ name }}"
-                                   {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
-                                    {{ name }}
-                                </a>
-                            {% else %}
-                                {{ name }}
-                            {% endif %}
-                        </h3>
-                    {% endblock %}
-
-                    {% block component_category_box_hero_description %}
-                        {% if category.translated.description %}
-                            <div class="category-hero-card__description">
-                                {{ category.translated.description|striptags|slice(0, 120) }}{% if category.translated.description|length > 120 %}...{% endif %}
-                            </div>
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block component_category_box_hero_action %}
-                        <div class="category-hero-card__action">
-                            <a href="{% if category.url %}{{ category.url }}{% else %}{{ seoUrl('frontend.navigation.page', {'navigationId': id}) }}{% endif %}"
-                               class="btn category-hero-card__button"
+                            <a href="{% if category.externalLink %}{{ category.externalLink }}{% else %}{{ categoryUrl }}{% endif %}"
+                               class="category-hero-card__name-link"
                                title="{{ name }}"
                                {% if category.externalLink %}target="_blank" rel="noopener"{% endif %}>
-                                zur Kategorie
+                                {{ name }}
                             </a>
-                        </div>
+                        </h3>
                     {% endblock %}
                 </div>
             {% endblock %}

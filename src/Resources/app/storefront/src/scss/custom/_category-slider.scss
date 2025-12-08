@@ -1,10 +1,141 @@
-// Styles for category slider (same as original product-slider)
+// Styles for category slider
+// Based on product-slider structure but adapted for category slider
 // Number of elements per slide is determined automatically via productboxMinWidth
+
+// Category slider title styles (similar to product-slider)
+.cms-element-rezon-category-slider {
+    .cms-element-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #000000;
+    }
+
+    .cms-element-title-paragraph {
+        margin-bottom: 10px;
+        font-size: 30px;
+    }
+}
+
 .category-slider {
     position: relative;
     width: 100%;
+
+    // Arrow navigation container
+    .category-slider-controls-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .base-slider-controls {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    // Arrow navigation buttons (matching product-slider styles)
+    .category-slider-controls-prev,
+    .category-slider-controls-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+        pointer-events: all;
+        opacity: 1;
+        border-radius: 5px;
+        border: 1px solid transparent;
+        background-color: transparent;
+        cursor: pointer;
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000000;
+        }
+
+        &:hover {
+            border-color: rgba(0, 0, 0, 0);
+            background-color: rgba(0, 0, 0, 0);
+
+            .icon {
+                color: #333333;
+            }
+        }
+    }
+
+    // Previous button positioning
+    .category-slider-controls-prev {
+        left: -5px;
+
+        .icon {
+            > svg {
+                top: 0;
+                left: -2px;
+            }
+        }
+
+        // Arrow navigation inside
+        &.is-nav-prev-inside,
+        &.is-arrow-prev-inside {
+            left: 0;
+        }
+    }
+
+    // Next button positioning
+    .category-slider-controls-next {
+        right: -5px;
+
+        .icon {
+            > svg {
+                top: 0;
+                right: -1px;
+            }
+        }
+
+        // Arrow navigation inside
+        &.is-nav-next-inside,
+        &.is-arrow-next-inside {
+            right: 0;
+        }
+    }
+
+    // Navigation padding adjustments
+    &.has-nav-outside {
+        padding-right: 25px;
+        padding-left: 25px;
+    }
+
+    &.has-nav-inside {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    // Arrow navigation hover effect - show controls on hover (desktop only)
+    @media (min-width: 992px) {
+        .base-slider-controls {
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
+        }
+
+        &:hover {
+            .base-slider-controls {
+                opacity: 1;
+            }
+        }
+    }
 }
 
+// Category slider container
 .category-slider-container {
     display: flex;
 }
@@ -16,4 +147,92 @@
 .category-slider .card {
     width: 100%;
     max-width: 100%;
+}
+
+// Category hero card styles
+.category-hero-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    overflow: hidden;
+
+    .card-body {
+        --bs-card-spacer-y: 1rem;
+        --bs-card-spacer-x: 0rem;
+    }
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    &__image-container {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        min-height: 200px;
+        border-radius: 16px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 16px;
+            min-height: 250px;
+            transition: transform 0.3s ease;
+        }
+    }
+
+    // Hover effect - zoom image on card hover
+    &:hover {
+        .category-hero-card__image-container img {
+            transform: scale(1.05);
+        }
+    }
+
+    &__image-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    &__content {
+        padding: 1rem;
+        background: #fff;
+        text-align: center;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    &__name-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: color 0.3s ease;
+        text-align: center;
+
+        &:hover {
+            text-decoration: none;
+            color: #189eff;
+        }
+
+        &:focus {
+            outline: 2px solid #189eff;
+            outline-offset: 2px;
+        }
+    }
 }

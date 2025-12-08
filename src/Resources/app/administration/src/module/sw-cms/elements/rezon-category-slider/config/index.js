@@ -35,6 +35,7 @@ export default {
             const criteria = new Criteria(1, 500);
             criteria.addAssociation('media');
             criteria.addAssociation('parent');
+            criteria.addAssociation('seoUrls');
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
 
             return criteria;
@@ -218,6 +219,34 @@ export default {
             return breadcrumbNames.slice(0, -1).join(' > ');
         },
 
+        getCategoryUrl(category) {
+            if (!category) {
+                return '';
+            }
+
+            // Check for external link first
+            if (category.externalLink) {
+                return category.externalLink;
+            }
+
+            // Try to get SEO URL
+            if (category.seoUrls && category.seoUrls.length > 0) {
+                // Find canonical SEO URL
+                const canonicalSeoUrl = category.seoUrls.find(seoUrl => seoUrl.isCanonical);
+                if (canonicalSeoUrl) {
+                    return '/' + canonicalSeoUrl.seoPathInfo;
+                }
+                
+                // If no canonical, use first available
+                if (category.seoUrls[0] && category.seoUrls[0].seoPathInfo) {
+                    return '/' + category.seoUrls[0].seoPathInfo;
+                }
+            }
+
+            // Fallback: generate URL from category ID
+            return `/navigation/${category.id}`;
+        },
+
         isSelected(categoryId) {
             if (!this.categoryCollection) {
                 return false;
@@ -243,6 +272,7 @@ export default {
             criteria.setIds(categoryIds);
             criteria.addAssociation('media');
             criteria.addAssociation('parent');
+            criteria.addAssociation('seoUrls');
 
             this.categoryRepository
                 .search(criteria, {
@@ -275,6 +305,7 @@ export default {
             const criteria = new Criteria(1, limit);
             criteria.addAssociation('media');
             criteria.addAssociation('parent');
+            criteria.addAssociation('seoUrls');
             criteria.addSorting(Criteria.sort('name', 'ASC', false));
 
             if (searchTerm) {

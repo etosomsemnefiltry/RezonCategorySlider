@@ -12,17 +12,8 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-
 class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
 {
-    private EntityRepository $seoUrlRepository;
-
-    public function __construct(EntityRepository $seoUrlRepository)
-    {
-        $this->seoUrlRepository = $seoUrlRepository;
-    }
     
     public function getType(): string
     {
@@ -45,6 +36,7 @@ class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
 
         $criteria = new Criteria($categoryIds);
         $criteria->addAssociation('media');
+        $criteria->addAssociation('seoUrls');
 
         $collection = new CriteriaCollection();
         $collection->add(
@@ -78,25 +70,8 @@ class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
         $salesChannelContext = $resolverContext->getSalesChannelContext();
         $salesChannelId = $salesChannelContext->getSalesChannelId();
         $languageId = $salesChannelContext->getLanguageId();
-        $categoryIds = $categories->getIds();
 
-        // Load SEO URLs for categories
-        $seoUrlCriteria = new Criteria();
-        $seoUrlCriteria->addFilter(new EqualsFilter('routeName', 'frontend.navigation.page'));
-        $seoUrlCriteria->addFilter(new EqualsFilter('salesChannelId', $salesChannelId));
-        $seoUrlCriteria->addFilter(new EqualsFilter('languageId', $languageId));
-        $seoUrlCriteria->addFilter(new EqualsFilter('isCanonical', true));
-        $seoUrlCriteria->addFilter(new EqualsAnyFilter('foreignKey', $categoryIds));
-
-        $seoUrls = $this->seoUrlRepository->search($seoUrlCriteria, $salesChannelContext->getContext());
-
-        // Create a map of categoryId => seoUrl
-        $seoUrlMap = [];
-        foreach ($seoUrls->getEntities() as $seoUrl) {
-            $seoUrlMap[$seoUrl->getForeignKey()] = $seoUrl;
-        }
-
-        // Assign URLs to categories
+        // Assign URLs to categories using loaded seoUrls association
         foreach ($categories as $category) {
             $urlData = [];
 
@@ -104,12 +79,43 @@ class RezonCategorySliderCmsElementResolver extends AbstractCmsElementResolver
             $externalLink = $category->getExternalLink();
             if ($externalLink) {
                 $urlData['externalLink'] = $externalLink;
-                $urlData['url'] = $externalLink;
-            } elseif (isset($seoUrlMap[$category->getId()])) {
-                // Use SEO URL if available
-                $seoUrl = $seoUrlMap[$category->getId()];
-                $urlData['url'] = '/' . $seoUrl->getSeoPathInfo();
-                $urlData['pathInfo'] = $seoUrl->getPathInfo();
+            } elseif ($category->getSeoUrls() && $category->getSeoUrls()->count() > 0) {
+                // Use SEO URL from association
+                $seoUrls = $category->getSeoUrls();
+                
+                // Find canonical SEO URL for current sales channel and language
+                $canonicalSeoUrl = null;
+                foreach ($seoUrls as $seoUrl) {
+                    if ($seoUrl->getIsCanonical() 
+                        && $seoUrl->getSalesChannelId() === $salesChannelId
+                        && $seoUrl->getLanguageId() === $languageId
+                        && $seoUrl->getRouteName() === 'frontend.navigation.page') {
+                        $canonicalSeoUrl = $seoUrl;
+                        break;
+                    }
+                }
+                
+                // If no canonical found, try to find any matching SEO URL
+                if (!$canonicalSeoUrl) {
+                    foreach ($seoUrls as $seoUrl) {
+                        if ($seoUrl->getSalesChannelId() === $salesChannelId
+                            && $seoUrl->getLanguageId() === $languageId
+                            && $seoUrl->getRouteName() === 'frontend.navigation.page') {
+                            $canonicalSeoUrl = $seoUrl;
+                            break;
+                        }
+                    }
+                }
+                
+                // If still no match, use first available SEO URL
+                if (!$canonicalSeoUrl && $seoUrls->count() > 0) {
+                    $canonicalSeoUrl = $seoUrls->first();
+                }
+                
+                if ($canonicalSeoUrl) {
+                    $urlData['url'] = '/' . $canonicalSeoUrl->getSeoPathInfo();
+                    $urlData['pathInfo'] = $canonicalSeoUrl->getPathInfo();
+                }
             }
 
             if (!empty($urlData)) {

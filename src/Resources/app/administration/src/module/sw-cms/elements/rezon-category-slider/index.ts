@@ -82,6 +82,34 @@ Shopware.Service('cmsService').registerCmsElement({
             source: 'static',
             value: 1,
         },
+        showProducts: {
+            source: 'static',
+            value: false,
+        },
+        productSelectionType: {
+            source: 'static',
+            value: 'static',
+        },
+        products: {
+            source: 'static',
+            value: [],
+            entity: {
+                name: 'product',
+                criteria: new Shopware.Data.Criteria(1, 25).addAssociation('cover'),
+            },
+        },
+        productCategory: {
+            source: 'static',
+            value: null,
+        },
+        productSort: {
+            source: 'static',
+            value: 'name:ASC',
+        },
+        productLimit: {
+            source: 'static',
+            value: 10,
+        },
     },
     collect: Shopware.Service('cmsService').getCollectFunction(),
 });

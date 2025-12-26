@@ -99,6 +99,66 @@
                     </template>
                 </sw-entity-multi-select>
                 {% endblock %}
+
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #d1d9e0;">
+
+                {% block sw_cms_element_rezon_category_slider_config_content_show_products %}
+                <mt-switch
+                    v-model="element.config.showProducts.value"
+                    label="Show Products below categories"
+                />
+                {% endblock %}
+
+                <template v-if="element.config.showProducts.value">
+                    {% block sw_cms_element_rezon_category_slider_config_content_product_selection_type %}
+                    <mt-select
+                        v-model="element.config.productSelectionType.value"
+                        label="Product selection type"
+                        :options="productAssignmentTypes"
+                    />
+                    {% endblock %}
+
+                    {% block sw_cms_element_rezon_category_slider_config_content_products_manual %}
+                    <sw-entity-multi-select
+                        v-if="element.config.productSelectionType.value === 'static'"
+                        v-model:entity-collection="productCollection"
+                        entity="product"
+                        label="Products"
+                        placeholder="Select products"
+                        :criteria="productCriteria"
+                        :context="productMultiSelectContext"
+                        @update:entity-collection="onProductsChange"
+                    />
+                    {% endblock %}
+
+                    {% block sw_cms_element_rezon_category_slider_config_content_products_category %}
+                    <sw-entity-single-select
+                        v-if="element.config.productSelectionType.value === 'category'"
+                        v-model:value="element.config.productCategory.value"
+                        entity="category"
+                        label="Category for products"
+                        placeholder="Select a category"
+                        :criteria="categoryCriteria"
+                    />
+                    {% endblock %}
+
+                    {% block sw_cms_element_rezon_category_slider_config_content_product_sort %}
+                    <mt-select
+                        v-model="element.config.productSort.value"
+                        label="Product sorting"
+                        :options="productSortOptions"
+                    />
+                    {% endblock %}
+
+                    {% block sw_cms_element_rezon_category_slider_config_content_product_limit %}
+                    <mt-number-field
+                        v-model="element.config.productLimit.value"
+                        label="Product limit"
+                        :min="1"
+                        :max="100"
+                    />
+                    {% endblock %}
+                </template>
             </sw-container>
             {% endblock %}
 

@@ -23,12 +23,70 @@ export default {
     data() {
         return {
             categoryCollection: null,
+            productCollection: null,
         };
     },
 
     computed: {
         categoryRepository() {
             return this.repositoryFactory.create('category');
+        },
+
+        productRepository() {
+            return this.repositoryFactory.create('product');
+        },
+
+        productMultiSelectContext() {
+            const context = { ...Shopware.Context.api };
+            context.inheritance = true;
+
+            return context;
+        },
+
+        productCriteria() {
+            const criteria = new Criteria(1, 100);
+            criteria.addAssociation('cover');
+            criteria.addAssociation('options.group');
+
+            return criteria;
+        },
+
+        productAssignmentTypes() {
+            return [
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productAssignmentTypeOptions.manual'),
+                    value: 'static',
+                },
+                {
+                    label: 'Category',
+                    value: 'category',
+                },
+            ];
+        },
+
+        productSortOptions() {
+            return [
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productStreamSortingOptions.nameAsc'),
+                    value: 'name:ASC',
+                },
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productStreamSortingOptions.nameDesc'),
+                    value: 'name:DESC',
+                },
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productStreamSortingOptions.priceAsc'),
+                    value: 'cheapestPrice:ASC',
+                },
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productStreamSortingOptions.priceDesc'),
+                    value: 'cheapestPrice:DESC',
+                },
+                {
+                    label: this.$tc('sw-cms.elements.productSlider.config.productStreamSortingOptions.random'),
+                    value: 'random',
+                },
+            ];
         },
 
         categoryCriteria() {
@@ -128,6 +186,13 @@ export default {
             },
             deep: true,
         },
+
+        productCollection: {
+            handler() {
+                this.updateProductsConfig();
+            },
+            deep: true,
+        },
     },
 
     created() {
@@ -138,6 +203,7 @@ export default {
         createdComponent() {
             this.initElementConfig('rezon-category-slider');
             this.initCategoryCollection();
+            this.initProductCollection();
         },
 
         getCategoryDisplayName(category) {
@@ -269,6 +335,63 @@ export default {
             }
 
             this.element.config.categories.value = this.categoryCollection.map((category) => category.id);
+        },
+
+        initProductCollection() {
+            const productIds = this.element.config.products.value;
+
+            if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
+                this.productCollection = new EntityCollection(
+                    this.productRepository.route,
+                    this.productRepository.schema.entity,
+                    Shopware.Context.api,
+                    this.productCriteria,
+                );
+                return;
+            }
+
+            const criteria = new Criteria(1, 100);
+            criteria.setIds(productIds);
+            criteria.addAssociation('cover');
+            criteria.addAssociation('options.group');
+
+            this.productRepository
+                .search(criteria, {
+                    ...Shopware.Context.api,
+                    inheritance: true,
+                })
+                .then((result) => {
+                    this.productCollection = result;
+                })
+                .catch(() => {
+                    this.productCollection = new EntityCollection(
+                        this.productRepository.route,
+                        this.productRepository.schema.entity,
+                        Shopware.Context.api,
+                        this.productCriteria,
+                    );
+                });
+        },
+
+        updateProductsConfig() {
+            if (!this.productCollection) {
+                this.element.config.products.value = [];
+                return;
+            }
+
+            this.element.config.products.value = this.productCollection.map((product) => product.id);
+        },
+
+        onProductsChange() {
+            this.updateProductsConfig();
+        },
+
+        productIsSelected(productId) {
+            if (!this.productCollection) {
+                return false;
+            }
+
+            return this.productCollection.has(productId);
         },
 
         fetchCategories(searchTerm = '', limit = 25) {

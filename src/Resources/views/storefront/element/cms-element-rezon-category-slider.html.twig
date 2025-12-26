@@ -119,5 +119,63 @@
     {% block element_category_slider_target_after_slider %}
         <div id="content-after-target-{{ blockId }}"></div>
     {% endblock %}
+
+    {% if element.extensions.rezon_products and element.extensions.rezon_products|length > 0 %}
+        {% set products = element.extensions.rezon_products %}
+        
+        <div class="cms-element-product-slider" style="margin-top: 40px;">
+            {% set productSliderOptions = {
+                productboxMinWidth: sliderConfig.elMinWidth.value ? sliderConfig.elMinWidth.value : '',
+                slider: {
+                    controls: sliderConfig.navigationArrows.value in visibleValues,
+                    nav: false,
+                    mouseDrag: true,
+                    autoplay: sliderConfig.rotate.value,
+                    autoplayButtonOutput: false,
+                    autoplayTimeout: sliderConfig.autoplayTimeout.value,
+                    speed: sliderConfig.speed.value,
+                    ariaLive: sliderConfig.rotate.value ? false : true,
+                    gutter: 30,
+                    loop: false,
+                    rewind: true
+                }
+            } %}
+
+            <div class="base-slider product-slider{% if sliderConfig.border.value %} has-border{% endif %}{% if sliderConfig.navigationArrows.value == "outside" %} has-nav-outside{% elseif sliderConfig.navigationArrows.value == "inside" %} has-nav-inside{% endif %}"
+                 data-product-slider="true"
+                 data-product-slider-options="{{ productSliderOptions|json_encode }}">
+                
+                <div class="product-slider-container" data-product-slider-container="true">
+                    {% for product in products %}
+                        <div class="product-slider-item">
+                            {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                'layout': sliderConfig.boxLayout.value,
+                                'displayMode': sliderConfig.displayMode.value
+                            } %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if productSliderOptions.slider.controls %}
+                    <div class="product-slider-controls-container">
+                        <div class="base-slider-controls" data-product-slider-controls="true">
+                            {% set positionClassesPrev = '' %}
+                            {% if sliderConfig.navigationArrows.value is not null %}
+                                {% set positionClassesPrev = ' is-nav-prev-' ~ sliderConfig.navigationArrows.value %}
+                                {% set positionClassesNext = ' is-nav-next-' ~ sliderConfig.navigationArrows.value %}
+                            {% endif %}
+
+                            <button class="base-slider-controls-prev product-slider-controls-prev{{ positionClassesPrev }}{% if sliderConfig.border.value %} has-border{% endif %}">
+                                {% sw_icon 'arrow-head-left' %}
+                            </button>
+                            <button class="base-slider-controls-next product-slider-controls-next{{ positionClassesNext }}{% if sliderConfig.border.value %} has-border{% endif %}">
+                                {% sw_icon 'arrow-head-right' %}
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
 
